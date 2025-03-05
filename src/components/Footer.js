@@ -560,4 +560,215 @@ export default function Footer() {
               
               {/* QR Code for contact */}
               <div className="relative h-32 w-32 mt-4 mx-auto md:ml-0 bg-white rounded-md p-2 parallax-element">
-                <div className="absolute inset-0 flex items-center justify-center text-
+                <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-600 font-mono">
+                  {/* Animated scan line effect */}
+                  <motion.div 
+                    className="absolute top-0 w-full h-1 bg-[var(--color-button-bg)]/30 z-10"
+                    animate={{ y: [0, 120, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  />
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <rect x="5" y="5" width="90" height="90" fill="none" stroke="var(--color-button-bg)" strokeWidth="1" strokeDasharray="3,2" />
+                    <text x="50" y="50" textAnchor="middle" dominantBaseline="middle" fontSize="8">
+                      SCAN FOR
+                    </text>
+                    <text x="50" y="60" textAnchor="middle" dominantBaseline="middle" fontSize="8">
+                      CONTACT
+                    </text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            {/* Newsletter Section - 4 columns */}
+            <div className="md:col-span-4 space-y-5">
+              <h3 className="font-bold text-lg relative inline-block">
+                Newsletter
+                <motion.span 
+                  className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-[var(--color-button-bg)] to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
+              </h3>
+              
+              <p className="text-[var(--color-primary)] parallax-element">
+                Suscríbete para recibir actualizaciones sobre nuevos proyectos y tecnologías.
+              </p>
+              
+              <div className="relative parallax-element">
+                {subscribed ? (
+                  <motion.div 
+                    className="flex items-center space-x-2 text-green-500 px-4 py-3 rounded-lg bg-green-500/10 border border-green-500/20"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>¡Gracias por suscribirte!</span>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <div className="relative flex-grow">
+                      <input 
+                        type="email" 
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        placeholder="tu@email.com" 
+                        className="w-full px-4 py-2 bg-[var(--color-background)]/80 border border-[var(--color-border)] rounded-lg placeholder-[var(--color-primary)]/50 focus:outline-none focus:border-[var(--color-button-bg)]"
+                        required
+                      />
+                      <div className="absolute top-0 right-0 bottom-0 flex items-center mr-1">
+                        <motion.div 
+                          className="w-1 h-2 bg-[var(--color-button-bg)]" 
+                          animate={{ 
+                            height: [2, 10, 2],
+                            opacity: [0.5, 1, 0.5] 
+                          }}
+                          transition={{ 
+                            duration: 1.5, 
+                            repeat: Infinity,
+                            repeatType: "loop" 
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <motion.button
+                      type="submit"
+                      className="bg-gradient-to-r from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)] text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <span>Suscribir</span>
+                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </motion.button>
+                  </form>
+                )}
+              </div>
+              
+              {/* Enhanced Accordion FAQ Section */}
+              <div className="mt-8 parallax-element">
+                <h4 className="font-medium text-base mb-3 flex items-center">
+                  <span className="w-5 h-5 rounded-full bg-[var(--color-button-bg)]/10 flex items-center justify-center text-[var(--color-button-bg)] mr-2">?</span>
+                  Preguntas Frecuentes
+                </h4>
+                
+                <div className="space-y-2">
+                  {[
+                    { q: "¿Qué servicios ofrecen?", a: "Desarrollo web, ciberseguridad y consultoría tecnológica." },
+                    { q: "¿Cómo puedo solicitar un presupuesto?", a: "Contáctanos a través del formulario o email para una cotización personalizada." }
+                  ].map((item, idx) => (
+                    <motion.div 
+                      key={idx}
+                      className="border border-[var(--color-border)] rounded-lg overflow-hidden"
+                      initial={{ height: 'auto' }}
+                      animate={activeSection === `faq-${idx}` ? 
+                        { backgroundColor: 'rgba(255,102,0,0.03)' } : 
+                        { backgroundColor: 'transparent' }
+                      }
+                      transition={{ duration: 0.3 }}
+                    >
+                      <button 
+                        onClick={() => activeSection === `faq-${idx}` ? 
+                          setActiveSection(null) : setActiveSection(`faq-${idx}`)
+                        }
+                        className="w-full px-4 py-3 text-left flex justify-between items-center"
+                      >
+                        <span className="font-medium text-sm">{item.q}</span>
+                        <motion.span 
+                          animate={{ rotate: activeSection === `faq-${idx}` ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 12 12">
+                            <path
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M1 4l5 4 5-4"
+                            />
+                          </svg>
+                        </motion.span>
+                      </button>
+                      
+                      <AnimatePresence>
+                        {activeSection === `faq-${idx}` && (
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-4 pb-3 pt-0 text-sm text-[var(--color-primary)]">
+                              {item.a}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Enhanced Divider */}
+          <div className="relative py-8">
+            <div ref={dividerRef} className="absolute left-0 w-full h-px overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-button-bg)]/50 to-transparent"></div>
+              <motion.div 
+                className="absolute top-0 left-0 h-full w-20 bg-[var(--color-button-bg)]/20"
+                animate={{ 
+                  x: ['-100%', '1000%'] 
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "linear",
+                  repeatDelay: 0.5
+                }}
+              />
+            </div>
+          </div>
+          
+          {/* Footer Bottom Section */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-[var(--color-primary)] text-sm">
+              © {currentYear} TempestGF. Todos los derechos reservados.
+            </div>
+            
+            <div className="flex gap-6">
+              <Link href="/privacy" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
+                Política de Privacidad
+              </Link>
+              <Link href="/terms" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
+                Términos de Servicio
+              </Link>
+              <Link href="/cookies" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
+                Cookies
+              </Link>
+            </div>
+            
+            {/* Back To Top Button */}
+            <motion.button
+              onClick={scrollToTop}
+              className="group w-10 h-10 rounded-full flex items-center justify-center border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] transition-all"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <svg className="w-5 h-5 transform group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
