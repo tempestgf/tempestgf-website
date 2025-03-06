@@ -20,11 +20,11 @@ export default function Home() {
   }, []);
 
   const navLinks = [
-    { id: 1, name: "Características", href: "#features" },
-    { id: 2, name: "Portfolio", href: "#portfolio" },
-    { id: 3, name: "Sobre Nosotros", href: "#about" },
-    { id: 4, name: "Testimonios", href: "#testimonials" },
-    { id: 5, name: "Contacto", href: "#contact" },
+    { id: 1, name: "Home", href: "#home" },
+    { id: 2, name: "About", href: "#about" },
+    { id: 3, name: "Contacto", href: "#contact" },
+    { id: 4, name: "Blog", href: "#blog" },
+
   ];
 
   return (
