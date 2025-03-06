@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "NextPro | Plataforma de Desarrollo Profesional",
+  title: "Tempestgf",
   description:
     "Impulsa tu desarrollo con una experiencia moderna, rápida y optimizada en Next.js y Tailwind CSS.",
 };

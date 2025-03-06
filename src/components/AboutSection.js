@@ -45,7 +45,10 @@ export default function About() {
   if (!mounted) return null;
 
   return (
-    <section className="py-16 px-4 bg-[var(--color-background)] relative">
+    <section 
+      id="about" // Add ID for scroll targeting
+      className="py-16 px-4 bg-[var(--color-background)] relative"
+    >
       {/* Enhanced decorative elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-button-bg)] to-transparent opacity-70"></div>
       <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-[var(--color-button-bg)] opacity-20"></div>

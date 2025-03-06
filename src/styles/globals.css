@@ -1,0 +1,18 @@
+:root {
+  --color-background-rgb: 10, 10, 10; /* Valor ejemplo para un fondo oscuro */
+  --color-foreground: #e2e2e2;
+  --color-primary: #cccccc;
+  --color-button-bg: #ff6600;
+  --color-button-bg-hover: #ff8800;
+  --color-border: #333333;
+}
+
+.dark {
+  // ...existing dark mode variables...
+  --color-background-rgb: 10, 10, 10;
+}
+
+.light {
+  // ...existing light mode variables...
+  --color-background-rgb: 245, 245, 245;
+}
