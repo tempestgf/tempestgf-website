@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaTwitter, FaGithub, FaLinkedin, FaDiscord } from 'react-icons/fa';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
 
 // Register ScrollTrigger with GSAP
 if (typeof window !== 'undefined') {
@@ -189,13 +190,12 @@ export default function Footer() {
     }
   };
 
-  // Scroll to top function with enhanced animation
+  // Scroll to top function with enhanced animation - Fix scrollTo error
   const scrollToTop = () => {
-    // Create a smooth scrolling effect
     gsap.to(window, {
       duration: 1,
-      scrollTo: 0,
       ease: "power3.inOut",
+      scrollTop: 0
     });
   };
 
@@ -290,10 +290,10 @@ export default function Footer() {
             </svg>
           </motion.div>
 
-          {/* Main Footer Content with enhanced grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
-            {/* Company Info - 4 columns on larger screens */}
-            <div className="md:col-span-4 space-y-6">
+          {/* Main Footer Content with enhanced grid - Ajuste de espaciado y estructura */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-16 mb-16">
+            {/* Company Info - Aumentar espacio */}
+            <div className="md:col-span-4 space-y-8">
               <div className="flex items-center">
                 <motion.div 
                   className="w-12 h-12 rounded-lg bg-[var(--color-button-bg)]/90 flex items-center justify-center mr-3 relative overflow-hidden"
@@ -425,14 +425,14 @@ export default function Footer() {
                   Ubicación central
                 </h3>
                 <p className="text-[var(--color-primary)] text-sm">
-                  Oficina principal en Madrid, España<br />
+                  Oficina principal en Tomecanic Hispania, Esparraguera<br />
                   Servicio disponible en toda Europa
                 </p>
               </div>
             </div>
             
-            {/* Site Navigation - 2 columns */}
-            <div className="md:col-span-2 space-y-4">
+            {/* Site Navigation - Ajuste de espaciado */}
+            <div className="md:col-span-2 space-y-6">
               <h3 className="font-bold text-lg text-[var(--color-foreground)] relative inline-block">
                 Navegación
                 <motion.span 
@@ -487,8 +487,8 @@ export default function Footer() {
                 ))}
               </nav>
               
-              {/* Utility links */}
-              <div className="pt-5 mt-5 border-t border-[var(--color-border)]/20">
+              {/* Utility links - Más espacio vertical */}
+              <div className="pt-6 mt-6 border-t border-[var(--color-border)]/20">
                 <h4 className="text-sm font-medium mb-2 text-[var(--color-primary)]">Utilidades</h4>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   <Link href="/faq" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
@@ -507,8 +507,8 @@ export default function Footer() {
               </div>
             </div>
             
-            {/* Contact Info - 2 columns */}
-            <div className="md:col-span-2 space-y-5">
+            {/* Contact Info - Mejor espaciado */}
+            <div className="md:col-span-2 space-y-6">
               <h3 className="font-bold text-lg relative inline-block">
                 Contacto
                 <motion.span 
@@ -519,16 +519,31 @@ export default function Footer() {
                 />
               </h3>
               
-              <ul className="space-y-4 text-[var(--color-primary)] parallax-element">
-                <li className="flex items-start group hover:translate-x-1 transition-transform duration-300 cursor-pointer">
-                  <div className="w-8 h-8 rounded-md bg-[var(--color-button-bg)]/10 flex items-center justify-center mr-3 group-hover:bg-[var(--color-button-bg)]/20 transition-colors">
-                    <svg className="w-4 h-4 text-[var(--color-button-bg)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+              <ul className="space-y-6 text-[var(--color-primary)] parallax-element">
+                {/* Email section with improved layout */}
+                <li className="flex items-start group hover:translate-x-1 transition-transform duration-300 cursor-pointer mb-8">
+                  <div className="shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--color-button-bg)]/10 flex items-center justify-center group-hover:bg-[var(--color-button-bg)]/20 transition-colors">
+                      <svg 
+                        className="w-5 h-5 text-[var(--color-button-bg)]" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" 
+                        />
+                      </svg>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-[var(--color-primary)]/70">Email:</p>
-                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">contact@tempestgf.com</p>
+                  <div className="flex-1 ml-4">
+                    <p className="text-sm text-[var(--color-primary)]/70 mb-1">Email:</p>
+                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300 break-all">
+                      tempestgf@protonmail.com
+                    </p>
                   </div>
                 </li>
                 
@@ -541,7 +556,7 @@ export default function Footer() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-[var(--color-primary)]/70">Dirección:</p>
-                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">Madrid, España</p>
+                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">Barcelona, España</p>
                   </div>
                 </li>
                 
@@ -558,30 +573,36 @@ export default function Footer() {
                 </li>
               </ul>
               
-              {/* QR Code for contact */}
-              <div className="relative h-32 w-32 mt-4 mx-auto md:ml-0 bg-white rounded-md p-2 parallax-element">
-                <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-600 font-mono">
+              {/* QR Code - Ajuste de margenes */}
+              <div className="relative h-32 w-32 mt-8 mx-auto md:ml-0 bg-white rounded-md p-2 parallax-element group">
+                <div className="relative h-full w-full">
+                  <Image
+                    src="/qr.png"
+                    alt="Contact QR Code"
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 128px) 100vw, 128px"
+                  />
                   {/* Animated scan line effect */}
                   <motion.div 
                     className="absolute top-0 w-full h-1 bg-[var(--color-button-bg)]/30 z-10"
                     animate={{ y: [0, 120, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
-                  <svg className="w-full h-full" viewBox="0 0 100 100">
-                    <rect x="5" y="5" width="90" height="90" fill="none" stroke="var(--color-button-bg)" strokeWidth="1" strokeDasharray="3,2" />
-                    <text x="50" y="50" textAnchor="middle" dominantBaseline="middle" fontSize="8">
-                      SCAN FOR
-                    </text>
-                    <text x="50" y="60" textAnchor="middle" dominantBaseline="middle" fontSize="8">
-                      CONTACT
-                    </text>
-                  </svg>
+                  
+                  {/* Overlay on hover */}
+                  <motion.div 
+                    className="absolute inset-0 bg-black/0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    whileHover={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+                  >
+                    <span className="text-xs text-[var(--color-button-bg)] font-mono">SCAN FOR CONTACT</span>
+                  </motion.div>
                 </div>
               </div>
             </div>
             
-            {/* Newsletter Section - 4 columns */}
-            <div className="md:col-span-4 space-y-5">
+            {/* Newsletter Section - Más espacio */}
+            <div className="md:col-span-4 space-y-6">
               <h3 className="font-bold text-lg relative inline-block">
                 Newsletter
                 <motion.span 
@@ -650,14 +671,14 @@ export default function Footer() {
                 )}
               </div>
               
-              {/* Enhanced Accordion FAQ Section */}
-              <div className="mt-8 parallax-element">
+              {/* Enhanced Accordion FAQ Section - Mejor espaciado */}
+              <div className="mt-12 parallax-element">
                 <h4 className="font-medium text-base mb-3 flex items-center">
                   <span className="w-5 h-5 rounded-full bg-[var(--color-button-bg)]/10 flex items-center justify-center text-[var(--color-button-bg)] mr-2">?</span>
                   Preguntas Frecuentes
                 </h4>
                 
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {[
                     { q: "¿Qué servicios ofrecen?", a: "Desarrollo web, ciberseguridad y consultoría tecnológica." },
                     { q: "¿Cómo puedo solicitar un presupuesto?", a: "Contáctanos a través del formulario o email para una cotización personalizada." }
@@ -718,8 +739,8 @@ export default function Footer() {
             </div>
           </div>
           
-          {/* Enhanced Divider */}
-          <div className="relative py-8">
+          {/* Enhanced Divider - Más margen */}
+          <div className="relative py-12">
             <div ref={dividerRef} className="absolute left-0 w-full h-px overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-button-bg)]/50 to-transparent"></div>
               <motion.div 
@@ -737,13 +758,13 @@ export default function Footer() {
             </div>
           </div>
           
-          {/* Footer Bottom Section */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Footer Bottom Section - Mejor espaciado */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="text-[var(--color-primary)] text-sm">
               © {currentYear} TempestGF. Todos los derechos reservados.
             </div>
             
-            <div className="flex gap-6">
+            <div className="flex gap-8">
               <Link href="/privacy" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
                 Política de Privacidad
               </Link>
@@ -755,10 +776,10 @@ export default function Footer() {
               </Link>
             </div>
             
-            {/* Back To Top Button */}
+            {/* Back To Top Button - Ajuste de posición */}
             <motion.button
               onClick={scrollToTop}
-              className="group w-10 h-10 rounded-full flex items-center justify-center border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] transition-all"
+              className="group w-12 h-12 rounded-full flex items-center justify-center border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] transition-all"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.9 }}
             >

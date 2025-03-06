@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { FaTwitter, FaGithub, FaCodepen, FaDiscord } from 'react-icons/fa';
+import { FaTwitter, FaGithub, FaCodepen, FaDiscord, FaLinkedin } from 'react-icons/fa';
 import { SiHackthebox } from 'react-icons/si';
 
 export default function About() {
@@ -159,11 +159,12 @@ export default function About() {
               {/* Social links with enhanced animations */}
               <div className="flex gap-5 py-4">
                 {[
-                  { Icon: FaTwitter, href: "https://twitter.com/tempestgf", delay: 0 },
-                  { Icon: FaGithub, href: "https://github.com/tempestgf", delay: 0.1 },
-                  { Icon: FaCodepen, href: "https://codepen.io/tempestgf", delay: 0.2 },
-                  { Icon: FaDiscord, href: "https://discord.com/users/404362200623349762", delay: 0.3 },
-                  { Icon: SiHackthebox, href: "https://app.hackthebox.com/profile/346176", delay: 0.4 }
+                  { Icon: FaTwitter, href: "https://twitter.com/tempestgf"},
+                  { Icon: FaGithub, href: "https://github.com/tempestgf"},
+                  { Icon: FaCodepen, href: "https://codepen.io/tempestgf"},
+                  { Icon: FaDiscord, href: "https://discord.com/users/404362200623349762"},
+                  { Icon: SiHackthebox, href: "https://app.hackthebox.com/profile/346176"},
+                  { Icon: FaLinkedin, href: "https://linkedin.com",}
                 ].map(({ Icon, href, delay }) => (
                   <motion.a 
                     key={href}
