@@ -159,11 +159,11 @@ export default function About() {
               {/* Social links with enhanced animations */}
               <div className="flex gap-5 py-4">
                 {[
-                  { Icon: FaTwitter, href: "https://twitter.com/yourusername", delay: 0 },
-                  { Icon: FaGithub, href: "https://github.com/yourusername", delay: 0.1 },
-                  { Icon: FaCodepen, href: "https://codepen.io/yourusername", delay: 0.2 },
-                  { Icon: FaDiscord, href: "https://discord.com/users/yourusername", delay: 0.3 },
-                  { Icon: SiHackthebox, href: "https://app.hackthebox.com/profile/yourusername", delay: 0.4 }
+                  { Icon: FaTwitter, href: "https://twitter.com/tempestgf", delay: 0 },
+                  { Icon: FaGithub, href: "https://github.com/tempestgf", delay: 0.1 },
+                  { Icon: FaCodepen, href: "https://codepen.io/tempestgf", delay: 0.2 },
+                  { Icon: FaDiscord, href: "https://discord.com/users/404362200623349762", delay: 0.3 },
+                  { Icon: SiHackthebox, href: "https://app.hackthebox.com/profile/346176", delay: 0.4 }
                 ].map(({ Icon, href, delay }) => (
                   <motion.a 
                     key={href}
