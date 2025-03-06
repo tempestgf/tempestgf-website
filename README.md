@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Personal website portfolio 
+
+Made in one hour with copilot and claude 3.7 Thinking.
+
+
+![Preview](https://github.com/tempestgf/tempestgf-website/blob/main/images/Preview.png)
+
 
 ## Getting Started
 
