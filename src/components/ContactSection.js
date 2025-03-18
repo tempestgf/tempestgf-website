@@ -222,7 +222,7 @@ export default function ContactSection() {
                 </div>
                 Email
               </h3>
-              <p className="text-[var(--color-primary)] ml-11">contact@tempestgf.com</p>
+              <p className="text-[var(--color-primary)] ml-11">tempestgf@protonmail.com</p>
             </div>
             
             {/* Location Info Card */}
@@ -237,7 +237,7 @@ export default function ContactSection() {
                 </div>
                 Location
               </h3>
-              <p className="text-[var(--color-primary)] ml-11">Madrid, Spain</p>
+              <p className="text-[var(--color-primary)] ml-11">Barcelona, Spain</p>
             </div>
             
             {/* Social Media Info Card */}

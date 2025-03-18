@@ -7,6 +7,7 @@ import useMediaQuery from "../hooks/useMediaQuery";
 import { useInView } from '../hooks/useInView';
 import useHeroEffects from "../hooks/useHeroEffects";
 import { getQualitySettings } from "../utils/performanceUtils";
+import useHeaderHeight from "../hooks/useHeaderHeight";
 
 // Componentes extraídos
 import HeroBackground from "./elements/HeroBackground";
@@ -148,6 +149,8 @@ const HeroSection = () => {
     }
   }, [isLowResourceMode]);
 
+  const headerHeight = useHeaderHeight();
+
   // Optimize initial loading by returning null until mounted
   if (!mounted) return null;
 
@@ -156,7 +159,8 @@ const HeroSection = () => {
       ref={sectionRef}
       id="home"
       aria-label="Sección principal"
-      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[var(--color-background)] transition-theme touch-manipulation"
+      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[var(--color-background)] transition-theme touch-manipulation pt-20 sm:pt-24"
+      style={{ paddingTop: `${headerHeight + 10}px` }} // Dynamic padding based on header height
       onMouseMove={!isLowResourceMode ? handleMouseMove : undefined}
       onMouseLeave={!isLowResourceMode ? handleMouseLeave : undefined}
     >
@@ -196,14 +200,14 @@ const HeroSection = () => {
       {/* Main Content with 3D depth effects */}
       <div 
         ref={containerRef}
-        className="relative z-10 w-full max-w-7xl px-6 sm:px-8 py-8 sm:py-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
+        className="relative z-10 w-full max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 flex flex-col lg:flex-row items-center gap-5 md:gap-8 lg:gap-12 mt-6 sm:mt-8"
         style={{ 
           perspective: isMobile ? 1500 : 2500,
         }}
       >
         {/* Left content - Title and description */}
         <motion.div 
-          className="flex-1 space-y-6 sm:space-y-8 backdrop-blur-lg rounded-2xl bg-[var(--color-background)]/5 p-6 sm:p-8 border border-[var(--color-border)]/30 relative overflow-hidden"
+          className="flex-1 w-full space-y-4 sm:space-y-6 backdrop-blur-lg rounded-xl sm:rounded-2xl bg-[var(--color-background)]/5 p-3 sm:p-4 lg:p-8 border border-[var(--color-border)]/30 relative overflow-hidden"
           style={{
             rotateX,
             rotateY,
@@ -242,7 +246,7 @@ const HeroSection = () => {
             />
           )}
           
-          <div className="space-y-6 relative z-10">
+          <div className="space-y-3 sm:space-y-4 md:space-y-6 relative z-10">
             {/* Title section */}
             <HeroTitle isMobile={isMobile} />
             
@@ -266,8 +270,10 @@ const HeroSection = () => {
       {/* Decorative cyber element - bottom corner - only on desktop */}
       {!isMobile && !isLowResourceMode && <DecorativeElement />}
       
-      {/* Scroll indicator - simplified */}
-      <ScrollIndicator scrollToAbout={scrollToAbout} isLowResourceMode={isLowResourceMode} />
+      {/* Scroll indicator - simplified - move up on mobile */}
+      <div className={`${isMobile ? "mb-6 mt-2" : ""}`}>
+        <ScrollIndicator scrollToAbout={scrollToAbout} isLowResourceMode={isLowResourceMode} />
+      </div>
     </section>
   );
 };

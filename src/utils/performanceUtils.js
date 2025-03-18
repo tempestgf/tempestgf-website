@@ -1,58 +1,160 @@
 /**
- * Utility to get optimized quality settings based on device capabilities
+ * Performance utilities to optimize rendering and animations
  */
+
+// Check device capabilities
+export function getDeviceCapabilities() {
+  if (typeof window === 'undefined') {
+    return { tier: 'low', memory: 'low', cpu: 'low', network: 'slow' };
+  }
+
+  // Network detection
+  const connection = navigator.connection || 
+                    navigator.mozConnection || 
+                    navigator.webkitConnection || 
+                    { effectiveType: '4g', saveData: false };
+                    
+  const networkTier = connection.effectiveType === '4g' ? 'high' : 
+                     (connection.effectiveType === '3g' ? 'medium' : 'low');
+  
+  // CPU/Memory detection (basic heuristic)
+  const hardwareConcurrency = navigator.hardwareConcurrency || 2;
+  const cpuTier = hardwareConcurrency > 4 ? 'high' : 
+                 (hardwareConcurrency > 2 ? 'medium' : 'low');
+  
+  // Device memory API
+  const deviceMemory = navigator.deviceMemory || 1;
+  const memoryTier = deviceMemory > 4 ? 'high' : 
+                    (deviceMemory > 2 ? 'medium' : 'low');
+  
+  // Overall performance tier
+  const tier = cpuTier === 'high' && memoryTier === 'high' ? 'high' :
+              (cpuTier === 'low' || memoryTier === 'low' ? 'low' : 'medium');
+  
+  return { 
+    tier,
+    memory: memoryTier,
+    cpu: cpuTier,
+    network: networkTier,
+    saveData: !!connection.saveData,
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    reducedData: window.matchMedia('(prefers-reduced-data: reduce)').matches || connection.saveData,
+    isLowEndDevice: tier === 'low',
+    hardwareConcurrency,
+    deviceMemory,
+    effectiveConnectionType: connection.effectiveType
+  };
+}
+
+// Dynamically adjust quality settings based on device capabilities
 export function getQualitySettings(isMobile, isTablet, isLowPowerDevice, prefersReducedData) {
-  // Base values for high-end devices
-  const base = {
-    tiltFactor: 7,
-    hexagons: 18,
-    particles: 15,
-    backgroundElements: 20,
-    updateFrequency: 33,
-    animationDuration: 1,
-    effectsEnabled: true
+  const capabilities = getDeviceCapabilities();
+  
+  // Default optimizations
+  let settings = {
+    particleCount: 100,
+    enableBlur: true,
+    enableShadows: true,
+    animationLevel: 'full',
+    imageQuality: 'high',
+    tiltFactor: 10,
+    enableParallax: true,
+    enablePostProcessing: true,
+    throttleRAF: false,
+    minFrameMS: 0, // No throttling by default
+    batchDOMOperations: false
   };
   
-  // Mobile settings - reduce complexity significantly
-  if (isMobile) {
-    return {
-      tiltFactor: 3,
-      hexagons: 6,
-      particles: 5,
-      backgroundElements: 10,
-      updateFrequency: 50,
-      animationDuration: 0.7,
-      effectsEnabled: false
-    };
-  }
-  
-  // Tablet settings - medium complexity
-  if (isTablet) {
-    return {
+  // Low-tier device optimizations
+  if (isMobile || capabilities.tier === 'low' || isLowPowerDevice) {
+    settings = {
+      ...settings,
+      particleCount: 20,
+      enableBlur: false,
+      enableShadows: false,
+      animationLevel: 'minimal',
+      imageQuality: 'low',
       tiltFactor: 5,
-      hexagons: 10,
-      particles: 8,
-      backgroundElements: 15,
-      updateFrequency: 40,
-      animationDuration: 0.8,
-      effectsEnabled: true
+      enableParallax: false,
+      enablePostProcessing: false,
+      throttleRAF: true,
+      minFrameMS: 33.33, // Cap at 30fps
+      batchDOMOperations: true
     };
   }
   
-  // Low power devices - prioritize performance over visuals
-  if (isLowPowerDevice || prefersReducedData) {
-    return {
-      tiltFactor: 4,
-      hexagons: 8,
-      particles: 0, // No particles for low power
-      backgroundElements: 8,
-      updateFrequency: 60,
-      animationDuration: 0.5,
-      effectsEnabled: false
+  // Medium-tier device optimizations
+  else if (isTablet || capabilities.tier === 'medium') {
+    settings = {
+      ...settings,
+      particleCount: 50,
+      enableBlur: true,
+      enableShadows: false,
+      animationLevel: 'reduced', 
+      imageQuality: 'medium',
+      tiltFactor: 7,
+      enableParallax: true,
+      enablePostProcessing: false,
+      throttleRAF: true,
+      minFrameMS: 16.67, // Cap at 60fps
+      batchDOMOperations: true
     };
   }
   
-  return base;
+  // Data saving mode
+  if (prefersReducedData || capabilities.saveData) {
+    settings.imageQuality = 'low';
+    settings.enablePostProcessing = false;
+    settings.particleCount = Math.max(10, Math.floor(settings.particleCount / 2));
+  }
+  
+  return settings;
+}
+
+// Create a throttled requestAnimationFrame for performance
+export function createThrottledRAF(minFrameMS = 16.67) {
+  let lastFrameTime = 0;
+  
+  return (callback) => {
+    return requestAnimationFrame((timestamp) => {
+      const elapsed = timestamp - lastFrameTime;
+      if (elapsed >= minFrameMS) {
+        lastFrameTime = timestamp;
+        callback(timestamp);
+      }
+    });
+  };
+}
+
+// Batch DOM operations to reduce reflows
+export function batchDOMOperations(operations, timeout = 16) {
+  if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(() => operations(), { timeout });
+  } else {
+    setTimeout(operations, timeout);
+  }
+}
+
+// Debounce function to limit execution
+export function debounce(func, wait = 100) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Fast way to check if element is in viewport
+export function isInViewport(element, offset = 200) {
+  if (!element) return false;
+  
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top <= (window.innerHeight + offset) &&
+    rect.bottom >= -offset &&
+    rect.left <= (window.innerWidth + offset) &&
+    rect.right >= -offset
+  );
 }
 
 /**

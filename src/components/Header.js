@@ -39,6 +39,7 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
           ? "bg-[var(--color-background)]/90 shadow-lg backdrop-blur-md" 
           : "bg-transparent"
       }`}
+      style={{ height: isScrolled ? 'auto' : '80px' }} // Set explicit height
     >
       {/* Decorative top border with gradient */}
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[var(--color-button-bg)] to-transparent opacity-80"></div>
@@ -172,7 +173,7 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <Link href="/contact" className="group">
+            <Link href="#contact" className="group">
               <motion.button 
                 className="relative px-5 py-2 rounded-md bg-[var(--color-button-bg)] text-white font-medium overflow-hidden"
                 whileHover={{ scale: 1.05 }}

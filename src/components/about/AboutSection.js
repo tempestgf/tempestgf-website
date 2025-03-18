@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import ProfileSection from './ProfileSection';
 import TabsSection from './TabsSection';
 import TechEnvironment from './TechEnvironment';
+import ThreeScene from './ThreeScene';
 
 export default function About() {
   const [mounted, setMounted] = useState(false);
@@ -24,6 +25,12 @@ export default function About() {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-button-bg)] to-transparent opacity-70"></div>
       <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-[var(--color-button-bg)] opacity-20"></div>
       <div className="absolute top-40 left-10 w-20 h-20 border-t-2 border-l-2 border-[var(--color-button-bg)] opacity-20"></div>
+      
+      {/* 3D Hacker Model - Updated positioning and z-index */}
+      <div className="absolute right-0 bottom-0 w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 z-10 threejs-canvas" 
+           style={{ pointerEvents: 'none' }}>
+        <ThreeScene />
+      </div>
       
       {/* Animated particles in background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -50,7 +57,7 @@ export default function About() {
         ))}
       </div>
       
-      <div className="container-responsive relative">
+      <div className="container-responsive relative z-20">
         <ProfileSection />
         <TabsSection />
         <TechEnvironment />

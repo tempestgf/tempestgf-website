@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTwitter, FaGithub, FaLinkedin, FaDiscord } from 'react-icons/fa';
@@ -66,117 +66,73 @@ export default function Footer() {
   };
 
   useEffect(() => {
-    // Initialize animations after component mounts
-    const footerElement = footerRef.current;
-    const contentElements = footerContentRef.current ? footerContentRef.current.children : null;
-    const bgPattern = footerBgPatternRef.current;
-    const circuitLayer = circuitLayerRef.current;
-    const divider = dividerRef.current;
-    
-    if (!footerElement || !contentElements || !bgPattern) return;
-    
-    // Create parallax scrolling effect
-    const parallaxElements = footerElement.querySelectorAll('.parallax-element');
-    parallaxElements.forEach((element, i) => {
-      const depth = (i % 3) + 1; // 1, 2, or 3
-      const direction = i % 2 === 0 ? 1 : -1; // alternate direction
+    // PERFORMANCE OPTIMIZATION: Delay expensive animations
+    const delayedInit = setTimeout(() => {
+      // Initialize animations after delay
+      const footerElement = footerRef.current;
+      if (!footerElement) return;
       
+      // OPTIMIZATION: Use a single simpler animation instead of many
       gsap.fromTo(
-        element, 
-        { y: -30 * depth * direction, opacity: 0 },
+        footerElement,
+        { opacity: 0.8 },
         {
-          y: 0,
           opacity: 1,
-          duration: 1,
-          delay: 0.1 * i,
+          duration: 0.8,
           scrollTrigger: {
             trigger: footerElement,
             start: "top bottom",
-            end: "center bottom",
-            scrub: true,
-            toggleActions: "play none none reverse"
+            toggleActions: "play none none none" // Reduced complexity
           }
         }
       );
-    });
-    
-    // Main footer entrance animation
-    gsap.fromTo(
-      footerElement,
-      { backgroundPosition: "0 100px" },
-      {
-        backgroundPosition: "0 0",
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: footerElement,
-          start: "top bottom",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-    
-    // Stagger animation for all footer content
-    gsap.fromTo(
-      contentElements,
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        stagger: 0.1,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: footerElement,
-          start: "top bottom-=100",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-    
-    // Animated circuit layer
-    if (circuitLayer) {
-      gsap.fromTo(
-        circuitLayer,
-        { opacity: 0, scale: 0.9 },
-        {
-          opacity: 0.15,
-          scale: 1,
-          duration: 1.2,
-          scrollTrigger: {
-            trigger: footerElement,
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse"
+      
+      // OPTIMIZATION: Skip most animations
+      if (dividerRef.current) {
+        gsap.fromTo(
+          dividerRef.current,
+          { width: "0%" },
+          {
+            width: "100%",
+            duration: 1,
+            scrollTrigger: {
+              trigger: dividerRef.current,
+              start: "top bottom",
+            }
           }
-        }
-      );
+        );
+      }
+      
+    }, 1000); // Delay these expensive animations
+    
+    // Add simple mouse move handler with throttling
+    let lastMoveTime = 0;
+    const handleMouseMove = (e) => {
+      if (Date.now() - lastMoveTime < 50) return; // Throttle to every 50ms
+      lastMoveTime = Date.now();
+      
+      if (!footerRef.current || !glowRef.current) return;
+      const rect = footerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Direct style manipulation instead of GSAP for better performance
+      glowRef.current.style.transform = `translate(${x}px, ${y}px)`;
+    };
+    
+    const footerEl = footerRef.current;
+    if (footerEl) {
+      footerEl.addEventListener('mousemove', handleMouseMove, { passive: true });
     }
     
-    // Animated divider
-    if (divider) {
-      gsap.fromTo(
-        divider,
-        { width: "0%" },
-        {
-          width: "100%",
-          duration: 1.5,
-          ease: "power2.inOut",
-          scrollTrigger: {
-          trigger: divider,
-          start: "top bottom-=50",
-          toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
-    
-    // Add scroll listener
-    footerElement.addEventListener('mousemove', handleMouseMove);
-    
-    // Cleanup function
+    // Cleanup
     return () => {
+      clearTimeout(delayedInit);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      footerElement.removeEventListener('mousemove', handleMouseMove);
+      
+      if (footerEl) {
+        footerEl.removeEventListener('mousemove', handleMouseMove);
+      }
     };
   }, []);
 
