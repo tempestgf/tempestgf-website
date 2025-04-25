@@ -65,8 +65,8 @@ const useHeroEffects = ({
       delay: i * 0.5
     }));
     
-    // Generate optimized hex grid
-    const count = isMobile ? 5 : (isTablet ? 8 : 15);
+    // Generate optimized hex grid - reducido para mejor rendimiento
+    const count = isMobile ? 3 : (isTablet ? 5 : 8); // Reducido de 5/8/15 a 3/5/8
     return Array.from({ length: count }).map((_, i) => {
       const size = 60 + (i * 5) % 40;
       // Pre-compute values to avoid calculations in render
@@ -89,35 +89,21 @@ const useHeroEffects = ({
     particles: [] 
   }), [isLowResourceMode]);
 
-  // Mouse movement handler with optimization
+  // Mouse movement handler - deshabilitado para eliminar el efecto de movimiento
   const handleMouseMove = useCallback((e) => {
-    if (isLowResourceMode || mouseThrottleRef.current) return;
+    // No hacemos nada para desactivar el efecto de movimiento
+    // Mantenemos la actualización del cursor para otros efectos pero no para mover los elementos
+    if (mouseThrottleRef.current) return;
     
     mouseThrottleRef.current = requestAnimationFrame(() => {
       if (!isMounted.current) return;
       
-      // Center-based mouse position for parallax effect
-      const rect = containerRef?.current?.getBoundingClientRect();
-      if (!rect) {
-        mouseThrottleRef.current = null;
-        return;
-      }
-      
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const mouseX = e.clientX - rect.left - centerX;
-      const mouseY = e.clientY - rect.top - centerY;
-      
-      // Update motion values with damping for smoother effect
-      x.set(mouseX * 0.5); // Reduced intensity
-      y.set(mouseY * 0.5);
-      
-      // Update cursor position directly from mouse position
+      // Actualizar solo la posición del cursor pero no el efecto de parallax
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       
-      // Handle particle creation - reduced frequency
-      if (Math.random() > 0.7 && !isLowResourceMode && !batteryOptimizeRef.current) {
+      // Seguimos creando partículas para el efecto del cursor - con menor frecuencia
+      if (Math.random() > 0.85 && !isLowResourceMode && !batteryOptimizeRef.current) { // Reducido de 0.7 a 0.85
         const speedFactor = 0.05;
         const newParticle = {
           id: Date.now().toString() + Math.random().toString().slice(2, 8),
@@ -130,19 +116,17 @@ const useHeroEffects = ({
           color: `hsl(${20 + Math.random() * 20}, 100%, ${50 + Math.random() * 20}%)`
         };
         
-        setVisibleParticles(prev => [...prev.slice(-19), newParticle]);
+        setVisibleParticles(prev => [...prev.slice(-12), newParticle]); // Reducido de 19 a 12
       }
       
       mouseThrottleRef.current = null;
     });
-  }, [isLowResourceMode, containerRef, x, y, cursorX, cursorY]);
+  }, [isLowResourceMode, cursorX, cursorY]);
 
-  // Mouse leave handler
+  // Mouse leave handler - simplificado
   const handleMouseLeave = useCallback(() => {
-    // Smoothly return to center
-    x.set(0);
-    y.set(0);
-  }, [x, y]);
+    // No hacemos nada ya que no hay movimiento que restaurar
+  }, []);
 
   // Glitch effect trigger
   const triggerGlitch = useCallback(() => {
@@ -204,20 +188,20 @@ const useHeroEffects = ({
     // Flare effect - skip for lower-end devices
     if (!isTablet && !isMobile) {
       intervalsRef.current.push(setInterval(() => {
-        if (isMounted.current && isInView && Math.random() > 0.6) {
+        if (isMounted.current && isInView && Math.random() > 0.7) { // Reducido de 0.6 a 0.7
           setShowFlare(true);
           timersRef.current.push(setTimeout(() => setShowFlare(false), 800));
         }
-      }, 9000 * mobileFactorInterval));
+      }, 12000 * mobileFactorInterval)); // Aumentado de 9000 a 12000
     }
     
     // Scan line animation (reduced frequency)
     intervalsRef.current.push(setInterval(() => {
-      if (isMounted.current && isInView && Math.random() > 0.5) {
+      if (isMounted.current && isInView && Math.random() > 0.6) { // Reducido de 0.5 a 0.6
         setScanLineActive(true);
         timersRef.current.push(setTimeout(() => setScanLineActive(false), 500));
       }
-    }, 6000 * mobileFactorInterval));
+    }, 8000 * mobileFactorInterval)); // Aumentado de 6000 a 8000
     
     // Typing animation - critical for UX
     const lineInterval = setInterval(() => {
@@ -236,11 +220,11 @@ const useHeroEffects = ({
     if (qualitySettings.effectsEnabled) {
       // Data stream animation (reduced frequency)
       intervalsRef.current.push(setInterval(() => {
-        if (isMounted.current && isInView && Math.random() > 0.7) {
+        if (isMounted.current && isInView && Math.random() > 0.8) { // Reducido de 0.7 a 0.8
           setShowDataStream(true);
           timersRef.current.push(setTimeout(() => setShowDataStream(false), 1500));
         }
-      }, 12000 * mobileFactorInterval));
+      }, 15000 * mobileFactorInterval)); // Aumentado de 12000 a 15000
       
       // Attention grabbing for desktops only
       if (!isMobile && !isTablet) {
@@ -250,15 +234,15 @@ const useHeroEffects = ({
           const randomElement = elements[Math.floor(Math.random() * elements.length)];
           setActiveAttention(randomElement);
           timersRef.current.push(setTimeout(() => setActiveAttention(null), 1500));
-        }, 15000));
+        }, 20000)); // Aumentado de 15000 a 20000
       }
       
       // Rare glitch effects
       intervalsRef.current.push(setInterval(() => {
-        if (isMounted.current && isInView && Math.random() > 0.7) {
+        if (isMounted.current && isInView && Math.random() > 0.8) { // Reducido de 0.7 a 0.8
           triggerGlitch();
         }
-      }, 5000 * mobileFactorInterval));
+      }, 8000 * mobileFactorInterval)); // Aumentado de 5000 a 8000
     }
     
     // Cleanup function
@@ -333,6 +317,7 @@ const useHeroEffects = ({
         isMobile={isMobile}
         skipInitialAnimations={isLowResourceMode}
         className="w-full h-full"
+        height="450px"
       />
     );
   }, [

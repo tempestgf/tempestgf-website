@@ -1,15 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
-const ScrollIndicator = ({ scrollToAbout }) => {
+const ScrollIndicator = ({ scrollToAbout, isLowResourceMode }) => {
+  const { t } = useTranslation();
+  
   return (
     <motion.div 
-      className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-70 cursor-pointer"
-      animate={{ y: [0, 10, 0] }}
+      className="flex flex-col items-center opacity-70 cursor-pointer mx-auto w-max"
+      animate={{ y: isLowResourceMode ? 0 : [0, 10, 0] }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       onClick={scrollToAbout}
       role="button"
-      aria-label="Scroll to About section"
+      aria-label={t('heroSection.scrollDown')}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -17,7 +20,7 @@ const ScrollIndicator = ({ scrollToAbout }) => {
         }
       }}
     >
-      <div className="text-sm text-[var(--color-primary)] mb-2">Desplaza hacia abajo</div>
+      <div className="text-sm text-[var(--color-primary)] mb-2">{t('heroSection.scrollDown')}</div>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[var(--color-button-bg)]">
         <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

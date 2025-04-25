@@ -30,11 +30,10 @@ const ClientLayout = memo(function ClientLayout({ children }) {
 
   return (
     <div 
-      className={pageLoaded ? 'opacity-100' : 'opacity-0'} 
+      className={`${pageLoaded ? 'opacity-100' : 'opacity-0'} flex flex-col min-h-screen relative`} 
       style={{ 
         transition: 'opacity 0.2s',
-        contain: 'content',
-        minHeight: '100vh'
+        contain: 'content'
       }}
     >
       {children}

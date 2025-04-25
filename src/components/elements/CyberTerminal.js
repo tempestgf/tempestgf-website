@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // Simple TypewriterText component with maximum optimization
 const TypewriterText = memo(({ text, delay = 30, showCursor = true, cursor = true, skipAnimation = false }) => {
@@ -56,25 +57,57 @@ const CyberTerminal = memo(({
   className = "",
   showHeader = true,
   skipInitialAnimations = false,
-  isMobile = false
+  isMobile = false,
+  height = "450px"
 }) => {
+  const { t } = useTranslation();
+  
+  // Comandos disponibles para la terminal interactiva utilizando traducciones
+  const AVAILABLE_COMMANDS = useMemo(() => ({
+    help: t('terminal.commands.help'),
+    about: t('terminal.commands.about'),
+    skills: t('terminal.commands.skills'),
+    projects: t('terminal.commands.projects'),
+    contact: t('terminal.commands.contact'),
+    clear: t('terminal.commands.clear'),
+    echo: t('terminal.commands.echo'),
+    date: t('terminal.commands.date'),
+    whoami: t('terminal.commands.whoami'),
+  }), [t]);
+
+  // Respuestas para cada comando utilizando traducciones
+  const COMMAND_RESPONSES = useMemo(() => ({
+    about: t('terminal.responses.about'),
+    skills: t('terminal.responses.skills'),
+    projects: t('terminal.responses.projects'),
+    contact: t('terminal.responses.contact'),
+    whoami: t('terminal.responses.whoami'),
+    unknown: t('terminal.responses.unknown')
+  }), [t]);
+
   // Optimized state initialization
   const [consoleData, setConsoleData] = useState(() => 
     skipInitialAnimations ? lines.slice(0, currentLine) : []
   );
   
+  // Estado para la terminal interactiva
+  const [terminalHistory, setTerminalHistory] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
+  
   const [cursor, setCursor] = useState(true);
   const terminalRef = useRef(null);
+  const inputRef = useRef(null);
   const isMounted = useRef(true);
   const blinkIntervalRef = useRef(null);
   const initialRenderComplete = useRef(false);
   
-  // Status data for header - computed once
-  const statusData = useRef([
+  // Status data for header - computed once and memoized
+  const statusData = useMemo(() => [
     { label: "CPU", value: `${Math.floor(Math.random() * 30) + 10}%`, color: "text-green-400" },
     { label: "MEM", value: `${Math.floor(Math.random() * 40) + 30}%`, color: "text-yellow-400" },
     { label: "NET", value: `${Math.floor(Math.random() * 10) + 2}Mb/s`, color: "text-blue-400" },
-  ]).current;
+  ], []);
 
   // Debug logger that only runs in dev
   useEffect(() => {
@@ -91,14 +124,14 @@ const CyberTerminal = memo(({
     initialRenderComplete.current = true;
   }, [lines.length, currentLine, typingComplete, consoleData.length]);
 
-  // Cursor blink effect with reduced frequency
+  // Cursor blink effect with reduced frequency - further optimized for mobile
   useEffect(() => {
     isMounted.current = true;
     
-    // Slower blink for better performance
+    // Slower blink for better performance, even slower on mobile
     blinkIntervalRef.current = setInterval(() => {
       if (isMounted.current) setCursor(c => !c);
-    }, isMobile ? 800 : 600);
+    }, isMobile ? 1000 : 600);
     
     return () => {
       isMounted.current = false;
@@ -108,23 +141,34 @@ const CyberTerminal = memo(({
     };
   }, [isMobile]);
 
-  // Update console data when current line changes
-  useEffect(() => {
+  // Terminal output processing
+  const processConsoleData = useCallback(() => {
     if (!isMounted.current || skipInitialAnimations) return;
     
     // Only update if current line is ahead of existing data
     if (currentLine >= consoleData.length && currentLine < lines.length) {
-      const newData = [...consoleData, lines[currentLine]];
-      setConsoleData(newData);
-      
-      // Scroll to bottom after update
+      setConsoleData(prev => [...prev, lines[currentLine]]);
+    }
+    
+    // Comprobamos si hemos completado la animación inicial
+    if (typingComplete && currentLine >= lines.length - 1) {
+      setIsInitialAnimationComplete(true);
+    }
+  }, [currentLine, lines, consoleData, skipInitialAnimations, typingComplete]);
+
+  // Update console data when current line changes
+  useEffect(() => {
+    processConsoleData();
+    
+    // Optimized scrolling using requestAnimationFrame for better performance
+    if (terminalRef.current) {
       requestAnimationFrame(() => {
         if (terminalRef.current) {
           terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
         }
       });
     }
-  }, [currentLine, lines, consoleData, skipInitialAnimations]);
+  }, [currentLine, processConsoleData]);
 
   // Scroll to bottom helper
   const scrollToBottom = useCallback(() => {
@@ -135,78 +179,194 @@ const CyberTerminal = memo(({
     });
   }, []);
 
+  // Effect to scroll to bottom when terminal history changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [terminalHistory, scrollToBottom, consoleData.length]);
+  
+  // Procesar comando ingresado
+  const processCommand = useCallback((cmd) => {
+    const commandParts = cmd.trim().split(' ');
+    const command = commandParts[0].toLowerCase();
+    const args = commandParts.slice(1);
+    
+    let response = [];
+    
+    switch (command) {
+      case 'help':
+        response = [
+          t('terminal.responses.available')
+        ];
+        Object.entries(AVAILABLE_COMMANDS).forEach(([cmd, desc]) => {
+          response.push(`${cmd.padEnd(10)} - ${desc}`);
+        });
+        break;
+        
+      case 'clear':
+        setTerminalHistory([]);
+        return;
+        
+      case 'echo':
+        response = [args.join(' ') || ''];
+        break;
+        
+      case 'date':
+        response = [new Date().toLocaleString()];
+        break;
+        
+      case 'about':
+      case 'skills':
+      case 'projects':
+      case 'contact':
+      case 'whoami':
+        response = COMMAND_RESPONSES[command];
+        break;
+        
+      default:
+        response = COMMAND_RESPONSES.unknown;
+    }
+    
+    // Limitar el historial mucho más para mantener una altura fija
+    const newHistory = [
+      ...terminalHistory, 
+      { type: 'command', text: cmd },
+      { type: 'response', lines: response }
+    ].slice(-10); // Reducido a 10 elementos para mantener mejor el tamaño
+    
+    setTerminalHistory(newHistory);
+    
+    // Scroll después de la actualización
+    setTimeout(scrollToBottom, 50);
+  }, [terminalHistory, scrollToBottom, t, AVAILABLE_COMMANDS, COMMAND_RESPONSES]);
+  
+  // Manejar el envío del comando
+  const handleCommandSubmit = useCallback((e) => {
+    e.preventDefault();
+    if (inputValue.trim() !== '') {
+      processCommand(inputValue);
+      setInputValue('');
+      
+      // Enfocar en el input después del comando
+      if (inputRef.current) {
+        setTimeout(() => {
+          inputRef.current.focus();
+        }, 10);
+      }
+    }
+  }, [inputValue, processCommand]);
+  
+  // Enfocar en el input cuando se complete la animación inicial
+  useEffect(() => {
+    if (isInitialAnimationComplete && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isInitialAnimationComplete]);
+  
+  // Hacer click en terminal enfoca el input
+  const handleTerminalClick = useCallback(() => {
+    if (inputRef.current && isInitialAnimationComplete) {
+      inputRef.current.focus();
+    }
+  }, [isInitialAnimationComplete]);
+
   // Main render for terminal
   return (
     <div 
-      className={`backdrop-blur-sm rounded-lg overflow-hidden border border-[var(--color-border)] relative ${className} h-full`}
+      className={`backdrop-blur-sm rounded-lg overflow-hidden border border-[var(--color-border)] relative ${className}`}
       style={{ 
         backgroundColor: 'rgba(var(--color-background-rgb), 0.3)',
-        boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.3)',
-        minHeight: '450px'
+        boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.25)',
+        height: height,
+        minHeight: height,
+        maxHeight: height,
+        display: 'flex',
+        flexDirection: 'column'
       }}
+      onClick={handleTerminalClick}
     >
-      {/* Terminal header - simplified */}
+      {/* Terminal header - simplified and optimized for mobile */}
       {showHeader && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)] bg-[var(--color-background)]/80">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <div className="flex items-center justify-between px-3 sm:px-4 py-1 sm:py-2 border-b border-[var(--color-border)] bg-[var(--color-background)]/80">
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-red-500"></div>
+            <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-yellow-500"></div>
+            <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-green-500"></div>
           </div>
           
-          <div className="flex-1 text-center text-xs text-[var(--color-primary)] font-mono">
-            secure-terminal@tempestgf
-          </div>
-          
-          {/* Status indicators - reduced for mobile */}
-          <div className={`${isMobile ? 'hidden' : 'flex'} items-center space-x-3`}>
-            {statusData.map((status, index) => (
-              <div key={index} className="flex items-center">
-                <span className="text-xs text-[var(--color-primary)]">{status.label}:</span>
-                <span className={`ml-1 text-xs font-mono ${status.color}`}>
-                  {status.value}
-                </span>
+          <div className="text-[10px] sm:text-xs font-medium flex space-x-3 sm:space-x-4">
+            {/* Reduced status indicators for mobile */}
+            {statusData.slice(0, isMobile ? 2 : 3).map((status, index) => (
+              <div key={index} className="flex items-center space-x-1">
+                <span>{status.label}</span>
+                <span className={status.color}>{status.value}</span>
               </div>
             ))}
           </div>
+          
+          {!isMobile && (
+            <div className="flex space-x-2">
+              <div className="w-2 h-2 rounded-full bg-[var(--color-button-bg)]"></div>
+              <div className="w-2 h-2 rounded-full bg-[var(--color-button-bg)]/70"></div>
+            </div>
+          )}
         </div>
       )}
       
-      {/* Terminal content with hidden scrollbar */}
+      {/* Terminal content - optimized for mobile */}
       <div 
         ref={terminalRef}
-        className="terminal-content h-[380px] px-4 py-3 overflow-y-auto font-mono text-sm text-[var(--color-foreground)] bg-[var(--color-background)]/40 relative scrollbar-hide"
-        style={{ scrollbarWidth: 'none' }}
+        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 overflow-y-auto font-mono text-[var(--color-foreground)] bg-[var(--color-background)]/40 relative terminal-content"
+        style={{ 
+          fontSize: isMobile ? '0.65rem' : '0.8rem',
+          lineHeight: 1.5,
+          overflowY: 'auto',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
         onScroll={e => e.stopPropagation()}
       >
-        {/* Simple terminal decorations */}
-        <div className="absolute top-1 left-1 w-3 h-3 border-l border-t border-[var(--color-button-bg)]/50"></div>
-        <div className="absolute top-1 right-1 w-3 h-3 border-r border-t border-[var(--color-button-bg)]/50"></div>
-        <div className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-[var(--color-button-bg)]/50"></div>
-        <div className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-[var(--color-button-bg)]/50"></div>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .terminal-content::-webkit-scrollbar {
+              display: none;
+              width: 0;
+              height: 0;
+            }
+          `
+        }} />
+        
+        {/* Corner decorations */}
+        {!isMobile && (
+          <>
+            <div className="absolute top-1 left-1 w-3 h-3 border-l border-t border-[var(--color-button-bg)]/50"></div>
+            <div className="absolute top-1 right-1 w-3 h-3 border-r border-t border-[var(--color-button-bg)]/50"></div>
+            <div className="absolute bottom-1 left-1 w-3 h-3 border-l border-b border-[var(--color-button-bg)]/50"></div>
+            <div className="absolute bottom-1 right-1 w-3 h-3 border-r border-b border-[var(--color-button-bg)]/50"></div>
+          </>
+        )}
         
         {/* Terminal header text */}
-        <div className="mb-4">
-          <div className="text-[var(--color-button-bg)] font-bold">
-            TempestGF Terminal v3.1.4
+        <div className="mb-2">
+          <div className="text-[var(--color-button-bg)] font-bold text-sm">
+            {t('terminal.title')}
           </div>
-          <div className="text-xs flex flex-wrap gap-x-4 gap-y-1 mt-1">
+          <div className="text-[10px] sm:text-xs flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1">
             <div className="flex items-center">
               <span className="text-green-400 mr-1">●</span>
-              <span>Connection: Encrypted</span>
+              <span>{t('terminal.connection')}</span>
             </div>
             {!isMobile && (
               <div className="flex items-center">
                 <span className="text-yellow-400 mr-1">●</span>
-                <span>Protocol: Quantum-SSH</span>
+                <span>{t('terminal.protocol')}</span>
               </div>
             )}
           </div>
           <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-button-bg)]/30 to-transparent my-2"></div>
         </div>
         
-        {/* Console output - optimized */}
-        <div className="space-y-1">
+        {/* Console output */}
+        <div className="space-y-0.5">
           {consoleData.map((line, idx) => (
             <div key={idx} className="flex">
               <span className="text-[var(--color-button-bg)]">&gt;</span>
@@ -225,7 +385,7 @@ const CyberTerminal = memo(({
               ) : (
                 <TypewriterText 
                   text={lines[currentLine]} 
-                  delay={isMobile ? 15 : 25} 
+                  delay={isMobile ? 10 : 25} 
                   showCursor={true}
                   cursor={cursor}
                   skipAnimation={skipInitialAnimations || isMobile}
@@ -235,50 +395,79 @@ const CyberTerminal = memo(({
           </div>
         )}
         
-        {/* Final success message - simplified */}
+        {/* Final success message */}
         {typingComplete && (
-          <div className="mt-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-button-bg)]/40 to-transparent my-3"></div>
+          <div className="mt-3">
+            <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-button-bg)]/40 to-transparent my-2"></div>
             
-            <div className="relative pl-5 text-green-400">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-500"></div>
-              Conexión establecida. Sistemas operativos.
+            <div className="relative pl-5 text-green-400 text-xs">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-green-500"></div>
+              {t('terminal.success')}
             </div>
             
-            <div className="flex mt-2">
+            <div className="flex mt-1">
               <span className="text-[var(--color-button-bg)]">▶</span>
-              <span className="pl-1.5">
-                Bienvenido al sistema TempestGF. Acceso concedido.
+              <span className="pl-1.5 text-xs">
+                {t('terminal.welcome')}
               </span>
             </div>
             
-            {/* Command prompt */}
-            <div className="mt-3 flex items-center">
-              <span className="text-[var(--color-button-bg)]">$</span>
-              <div className="pl-1.5 h-5 flex items-center">
-                <span className="inline-block h-4 w-1.5 bg-[var(--color-button-bg)] animate-pulse"></span>
+            {/* Historial de comandos - limitado */}
+            {terminalHistory.length > 0 && (
+              <div className="mt-1 space-y-1">
+                {/* Mostrar solo los últimos 5 comandos para evitar crecimiento */}
+                {terminalHistory.slice(-5).map((item, index) => (
+                  <div key={index}>
+                    {item.type === 'command' && (
+                      <div className="flex">
+                        <span className="text-[var(--color-button-bg)]">$</span>
+                        <span className="pl-1.5 text-xs">{item.text}</span>
+                      </div>
+                    )}
+                    {item.type === 'response' && (
+                      <div className="pl-2 space-y-0.5">
+                        {item.lines.map((line, lineIdx) => (
+                          <div key={lineIdx} className="text-gray-300 text-xs">
+                            {line}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
+            
+            {/* Input de comando interactivo */}
+            <form onSubmit={handleCommandSubmit} className="mt-2 flex items-center">
+              <span className="text-[var(--color-button-bg)]">$</span>
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="pl-1.5 bg-transparent border-none outline-none text-[var(--color-foreground)] w-full font-mono text-xs"
+                placeholder={isInitialAnimationComplete ? t('terminal.inputPlaceholder') : t('terminal.loading')}
+                disabled={!isInitialAnimationComplete}
+                autoComplete="off"
+                spellCheck="false"
+                aria-label="Terminal input"
+              />
+            </form>
           </div>
         )}
       </div>
       
-      {/* Terminal footer - simplified */}
-      <div className="px-4 py-2 border-t border-[var(--color-border)] bg-[var(--color-background)]/80 text-xs text-[var(--color-primary)] flex justify-between items-center">
+      {/* Terminal footer */}
+      <div className="px-3 sm:px-4 py-1 sm:py-2 border-t border-[var(--color-border)] bg-[var(--color-background)]/80 text-[10px] sm:text-xs text-[var(--color-primary)] flex justify-between items-center">
         <div className="flex items-center">
-          <span className="w-2 h-2 rounded-full bg-green-400 mr-2"></span>
-          <span>Terminal active</span>
+          <span className="w-2 h-2 rounded-full bg-green-400 mr-1 sm:mr-2"></span>
+          <span>{t('terminal.active')}</span>
         </div>
         {!isMobile && (
-          <div>Session: <span className="text-[var(--color-button-bg)]">secure</span></div>
+          <div>{t('terminal.session')}</div>
         )}
       </div>
-      
-      {/* Custom scrollbar hiding CSS */}
-      <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </div>
   );
 });

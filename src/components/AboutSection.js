@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FaTwitter, FaGithub, FaCodepen, FaDiscord, FaLinkedin } from 'react-icons/fa';
 import { SiHackthebox } from 'react-icons/si';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function About() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('skills');
   const [mounted, setMounted] = useState(false);
   const [hoverSkill, setHoverSkill] = useState(null);
@@ -15,39 +17,83 @@ export default function About() {
     setMounted(true);
   }, []);
 
-  const skills = [
-    { category: "Languages", items: ["C", "C++", "Java", "Python", "JavaScript"] },
-    { category: "Web", items: ["Node.js", "React", "Next.js", "TailwindCSS"] },
-    { category: "Databases", items: ["MySQL", "MongoDB"] },
-    { category: "Mobile", items: ["Android Studio"] },
-    { category: "Security", items: ["Network Security", "Malware Analysis", "Penetration Testing"] },
-  ];
+  // Memoizing skills data
+  const skills = useMemo(() => [
+    { 
+      category: t('about.skills.categories.languages'), 
+      items: t('about.skills.items.languages')
+    },
+    { 
+      category: t('about.skills.categories.web'), 
+      items: t('about.skills.items.web')
+    },
+    { 
+      category: t('about.skills.categories.databases'), 
+      items: t('about.skills.items.databases')
+    },
+    { 
+      category: t('about.skills.categories.mobile'), 
+      items: t('about.skills.items.mobile')
+    },
+    { 
+      category: t('about.skills.categories.security'), 
+      items: t('about.skills.items.security')
+    },
+  ], [t]);
 
-  const projects = [
-    {
-      name: "Tor Network Server",
-      description: "Developed and deployed a secure server through the Tor network, ensuring anonymity and security for sensitive communications."
+  // Memoizing projects data
+  const projects = useMemo(() => t('about.projects'), [t]);
+
+  // Social links with icons
+  const socialLinks = useMemo(() => [
+    { 
+      Icon: FaTwitter, 
+      href: "https://twitter.com/tempestgf", 
+      name: t('about.socialLinks.twitter'),
+      delay: 0.1
     },
-    {
-      name: "Windows Malware Research",
-      description: "Created undetectable Windows malware through Tor for ethical research and penetration testing purposes."
+    { 
+      Icon: FaGithub, 
+      href: "https://github.com/tempestgf", 
+      name: t('about.socialLinks.github'),
+      delay: 0.2
     },
-    {
-      name: "Receipt Data Extractor",
-      description: "Developed a web application that automatically extracts and processes data from ticket photos into Excel spreadsheets."
+    { 
+      Icon: FaCodepen, 
+      href: "https://codepen.io/tempestgf", 
+      name: t('about.socialLinks.codepen'),
+      delay: 0.3
     },
-    {
-      name: "Custom Arch Linux Setup",
-      description: "Personalized Arch Linux environment with custom dotfiles for optimal development workflows."
+    { 
+      Icon: FaDiscord, 
+      href: "https://discord.com/users/404362200623349762", 
+      name: t('about.socialLinks.discord'),
+      delay: 0.4
+    },
+    { 
+      Icon: SiHackthebox, 
+      href: "https://app.hackthebox.com/profile/346176", 
+      name: t('about.socialLinks.hackthebox'),
+      delay: 0.5
+    },
+    { 
+      Icon: FaLinkedin, 
+      href: "https://linkedin.com", 
+      name: t('about.socialLinks.linkedin'),
+      delay: 0.6
     }
-  ];
+  ], [t]);
+
+  // Tech environment items
+  const techEnvironmentItems = useMemo(() => t('about.techEnvironment.items'), [t]);
 
   if (!mounted) return null;
 
   return (
     <section 
-      id="about" // Add ID for scroll targeting
-      className="py-16 px-4 bg-[var(--color-background)] relative"
+      id="about" 
+      className="py-16 px-4 bg-[var(--color-background)] relative scroll-mt-24" 
+      style={{ scrollMarginTop: '6rem' }}
     >
       {/* Enhanced decorative elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-button-bg)] to-transparent opacity-70"></div>
@@ -141,9 +187,8 @@ export default function About() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                >
-                  About <span className="text-[var(--color-button-bg)]">Me</span>
-                </motion.h1>
+                  dangerouslySetInnerHTML={{ __html: t('about.title') }}
+                />
                 <div className="absolute -bottom-2 left-0 w-20 h-1 bg-[var(--color-button-bg)]"></div>
               </div>
               
@@ -152,20 +197,12 @@ export default function About() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                I'm a <span className="text-[var(--color-button-bg)] font-medium">cybersecurity specialist</span> and software engineer with a passion for <span className="text-[var(--color-button-bg)] font-medium">artificial intelligence</span>. My expertise spans secure application development, penetration testing, and building robust web and mobile solutions.
-              </motion.p>
+                dangerouslySetInnerHTML={{ __html: t('about.description') }}
+              />
               
               {/* Social links with enhanced animations */}
               <div className="flex gap-5 py-4">
-                {[
-                  { Icon: FaTwitter, href: "https://twitter.com/tempestgf"},
-                  { Icon: FaGithub, href: "https://github.com/tempestgf"},
-                  { Icon: FaCodepen, href: "https://codepen.io/tempestgf"},
-                  { Icon: FaDiscord, href: "https://discord.com/users/404362200623349762"},
-                  { Icon: SiHackthebox, href: "https://app.hackthebox.com/profile/346176"},
-                  { Icon: FaLinkedin, href: "https://linkedin.com",}
-                ].map(({ Icon, href, delay }) => (
+                {socialLinks.map(({ Icon, href, name, delay }) => (
                   <motion.a 
                     key={href}
                     href={href} 
@@ -179,7 +216,7 @@ export default function About() {
                     className="relative group flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-button-bg)]/10 transition-all"
                   >
                     <Icon className="w-5 h-5 text-[var(--color-button-bg)] group-hover:text-[var(--color-button-bg-hover)] transition-colors" />
-                    <span className="absolute -bottom-8 font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-button-bg)]">{href.split('/').pop()}</span>
+                    <span className="absolute -bottom-8 font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-button-bg)]">{name}</span>
                     <span className="absolute -inset-0.5 rounded-full opacity-0 group-hover:opacity-100 border border-[var(--color-button-bg)]/50 group-hover:animate-ping-slow"></span>
                   </motion.a>
                 ))}
@@ -206,7 +243,7 @@ export default function About() {
                     backgroundColor: 'rgba(255,102,0,0.05)'
                   }}
                 >
-                  <span className="relative z-10">{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+                  <span className="relative z-10">{t(`about.tabs.${tab}`)}</span>
                   
                   {activeTab === tab && (
                     <motion.div 
@@ -331,7 +368,7 @@ export default function About() {
                         className="text-sm font-medium text-[var(--color-button-bg)] hover:text-[var(--color-button-bg-hover)] transition-colors flex items-center gap-1 ml-auto"
                         whileHover={{ x: 5 }}
                       >
-                        View details
+                        {t('about.viewDetails')}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
@@ -382,15 +419,11 @@ export default function About() {
                   <line x1="1" y1="14" x2="4" y2="14"></line>
                 </svg>
               </span>
-              Tech Environment
+              {t('about.techEnvironment.title')}
             </h2>
             
             <ul className="space-y-4">
-              {[
-                "Custom <strong>Arch Linux</strong> environment with personalized dotfiles for maximum efficiency",
-                "Experience with <strong>rooted Android devices</strong> for advanced customization",
-                "Skilled in <strong>cybersecurity research</strong>, including anonymity networks and secure systems"
-              ].map((item, index) => (
+              {techEnvironmentItems.map((item, index) => (
                 <motion.li 
                   key={index}
                   className="flex items-start p-3 rounded-md transition-colors hover:bg-[var(--color-button-bg)]/5"
@@ -414,7 +447,7 @@ export default function About() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
-                  Download Resume
+                  {t('about.techEnvironment.downloadResume')}
                 </span>
                 <motion.div 
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"

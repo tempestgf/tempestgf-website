@@ -7,6 +7,7 @@ import { FaTwitter, FaGithub, FaLinkedin, FaDiscord } from 'react-icons/fa';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
+import { useTranslation } from '../hooks/useTranslation';
 
 // Register ScrollTrigger with GSAP
 if (typeof window !== 'undefined') {
@@ -15,11 +16,11 @@ if (typeof window !== 'undefined') {
 
 // Configuration
 const NAV_LINKS = [
-  { href: '/', label: 'Inicio' },
-  { href: '/about', label: 'Acerca de' },
-  { href: '/projects', label: 'Proyectos' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contacto' },
+  { href: '/', label: 'home' },
+  { href: '/about', label: 'about' },
+  { href: '/projects', label: 'portfolio' },
+  { href: '/blog', label: 'blog' },
+  { href: '/contact', label: 'contact' },
 ];
 
 const SOCIAL_LINKS = [
@@ -30,6 +31,7 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -148,10 +150,9 @@ export default function Footer() {
 
   // Scroll to top function with enhanced animation - Fix scrollTo error
   const scrollToTop = () => {
-    gsap.to(window, {
-      duration: 1,
-      ease: "power3.inOut",
-      scrollTop: 0
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
     });
   };
 
@@ -159,7 +160,8 @@ export default function Footer() {
     <footer 
       ref={footerRef}
       role="contentinfo"
-      className="relative bg-gradient-to-b from-[var(--color-background)] to-[color-mix(in_srgb,var(--color-background),var(--color-button-bg)_15%)] text-[var(--color-foreground)] pt-24 pb-12 overflow-hidden"
+      className="relative bg-gradient-to-b from-[var(--color-background)] to-[color-mix(in_srgb,var(--color-background),var(--color-button-bg)_15%)] text-[var(--color-foreground)] pt-16 md:pt-24 pb-12 overflow-hidden z-0 mt-auto"
+      onMouseMove={handleMouseMove}
     >
       {/* Animated glow effect that follows the mouse */}
       <div 
@@ -228,10 +230,10 @@ export default function Footer() {
         <div ref={footerContentRef} className="relative">
           {/* Logo decorative element */}
           <motion.div 
-            className="absolute w-40 h-40 -top-24 left-1/2 transform -translate-x-1/2 opacity-5 pointer-events-none parallax-element hidden md:block"
+            className="absolute w-40 h-40 -top-24 left-1/2 transform -translate-x-1/2 opacity-10 pointer-events-none parallax-element hidden md:block"
             animate={{ 
               rotate: 360,
-              opacity: [0.05, 0.08, 0.05]
+              opacity: [0.1, 0.15, 0.1]
             }}
             transition={{ 
               rotate: { duration: 60, repeat: Infinity, ease: "linear" },
@@ -247,41 +249,25 @@ export default function Footer() {
           </motion.div>
 
           {/* Main Footer Content with enhanced grid - Ajuste de espaciado y estructura */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-16 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-12 md:gap-x-12 md:gap-y-16 mb-12 md:mb-16">
             {/* Company Info - Aumentar espacio */}
             <div className="md:col-span-4 space-y-8">
-              <div className="flex items-center">
-                <motion.div 
-                  className="w-12 h-12 rounded-lg bg-[var(--color-button-bg)]/90 flex items-center justify-center mr-3 relative overflow-hidden"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)]"></div>
-                  
-                  {/* Animated lines around the logo */}
-                  <motion.div 
-                    className="absolute inset-0 border border-white/30"
-                    animate={{ 
-                      opacity: [0.2, 0.5, 0.2],
-                      boxShadow: [
-                        '0 0 0px rgba(255, 255, 255, 0)',
-                        '0 0 8px rgba(255, 255, 255, 0.3)',
-                        '0 0 0px rgba(255, 255, 255, 0)'
-                      ]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                  
-                  <motion.span 
-                    className="relative text-white font-bold text-2xl"
-                    animate={{ y: [-1, 1, -1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    T
-                  </motion.span>
-                </motion.div>
-                
+              <div className="flex items-center">             
+                <div className="w-10 h-10 mr-3 relative flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)]/20 to-transparent rounded-lg"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6">
+                    <path 
+                      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" 
+                      fill="none" 
+                      stroke="var(--color-button-bg)" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
                 <div>
-                  <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-foreground)] to-[var(--color-button-bg)]">
+                  <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-foreground)] via-[var(--color-foreground)] to-[var(--color-button-bg)]">
                     Tempestgf
                   </h2>
                   <motion.div 
@@ -294,7 +280,7 @@ export default function Footer() {
               </div>
               
               <p className="text-[var(--color-primary)] text-lg max-w-sm leading-relaxed parallax-element">
-                Soluciones de ciberseguridad y desarrollo web avanzadas con enfoque en innovación y rendimiento.
+                {t('footer.companyInfo')}
               </p>
               
               {/* Enhanced Social Links */}
@@ -378,11 +364,10 @@ export default function Footer() {
                       <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                   </span>
-                  Ubicación central
+                  {t('footer.centralLocation')}
                 </h3>
                 <p className="text-[var(--color-primary)] text-sm">
-                  Oficina principal en Tomecanic Hispania, Esparraguera<br />
-                  Servicio disponible en toda Europa
+                  {t('footer.locationInfo')}
                 </p>
               </div>
             </div>
@@ -390,7 +375,7 @@ export default function Footer() {
             {/* Site Navigation - Ajuste de espaciado */}
             <div className="md:col-span-2 space-y-6">
               <h3 className="font-bold text-lg text-[var(--color-foreground)] relative inline-block">
-                Navegación
+                {t('footer.navigation')}
                 <motion.span 
                   className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-[var(--color-button-bg)] to-transparent"
                   initial={{ width: 0 }}
@@ -425,7 +410,7 @@ export default function Footer() {
                     
                     {/* Text with underline animation */}
                     <span className="relative">
-                      {label}
+                      {t(`navigation.${label}`)}
                       <motion.span 
                         className="absolute left-0 right-0 bottom-0 h-px bg-[var(--color-button-bg)]"
                         initial={{ scaleX: 0 }}
@@ -445,19 +430,19 @@ export default function Footer() {
               
               {/* Utility links - Más espacio vertical */}
               <div className="pt-6 mt-6 border-t border-[var(--color-border)]/20">
-                <h4 className="text-sm font-medium mb-2 text-[var(--color-primary)]">Utilidades</h4>
+                <h4 className="text-sm font-medium mb-2 text-[var(--color-primary)]">{t('footer.utilities')}</h4>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   <Link href="/faq" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                    FAQ
+                    {t('footer.faq')}
                   </Link>
                   <Link href="/support" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                    Soporte
+                    {t('footer.support')}
                   </Link>
                   <Link href="/privacy" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                    Privacidad
+                    {t('footer.privacy')}
                   </Link>
                   <Link href="/terms" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                    Términos
+                    {t('footer.terms')}
                   </Link>
                 </div>
               </div>
@@ -466,7 +451,7 @@ export default function Footer() {
             {/* Contact Info - Mejor espaciado */}
             <div className="md:col-span-2 space-y-6">
               <h3 className="font-bold text-lg relative inline-block">
-                Contacto
+                {t('footer.contact')}
                 <motion.span 
                   className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-[var(--color-button-bg)] to-transparent"
                   initial={{ width: 0 }}
@@ -496,7 +481,7 @@ export default function Footer() {
                     </div>
                   </div>
                   <div className="flex-1 ml-4">
-                    <p className="text-sm text-[var(--color-primary)]/70 mb-1">Email:</p>
+                    <p className="text-sm text-[var(--color-primary)]/70 mb-1">{t('footer.emailLabel')}</p>
                     <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300 break-all">
                       tempestgf@protonmail.com
                     </p>
@@ -511,7 +496,7 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-[var(--color-primary)]/70">Dirección:</p>
+                    <p className="text-sm text-[var(--color-primary)]/70">{t('footer.addressLabel')}</p>
                     <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">Barcelona, España</p>
                   </div>
                 </li>
@@ -523,35 +508,36 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-[var(--color-primary)]/70">Horario:</p>
-                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">Lun-Vie: 9:00-18:00</p>
+                    <p className="text-sm text-[var(--color-primary)]/70">{t('footer.scheduleLabel')}</p>
+                    <p className="group-hover:text-[var(--color-button-bg)] transition-colors duration-300">{t('footer.officeHours')}</p>
                   </div>
                 </li>
               </ul>
               
               {/* QR Code - Ajuste de margenes */}
-              <div className="relative h-32 w-32 mt-8 mx-auto md:ml-0 bg-white rounded-md p-2 parallax-element group">
+              <div className="relative h-36 w-36 mt-8 mx-auto md:ml-0 bg-white/90 rounded-lg p-2 parallax-element group hover:shadow-lg transition-shadow duration-300">
                 <div className="relative h-full w-full">
                   <Image
                     src="/qr.png"
                     alt="Contact QR Code"
                     fill
-                    className="object-contain"
-                    sizes="(max-width: 128px) 100vw, 128px"
+                    className="object-contain rounded-md"
+                    sizes="(max-width: 768px) 100vw, 144px"
+                    priority
                   />
                   {/* Animated scan line effect */}
                   <motion.div 
                     className="absolute top-0 w-full h-1 bg-[var(--color-button-bg)]/30 z-10"
-                    animate={{ y: [0, 120, 0] }}
+                    animate={{ y: [0, 128, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
                   
                   {/* Overlay on hover */}
                   <motion.div 
-                    className="absolute inset-0 bg-black/0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute inset-0 bg-black/0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"
                     whileHover={{ backgroundColor: "rgba(0,0,0,0.1)" }}
                   >
-                    <span className="text-xs text-[var(--color-button-bg)] font-mono">SCAN FOR CONTACT</span>
+                    <span className="text-xs text-[var(--color-button-bg)] font-mono bg-white/80 px-2 py-1 rounded">ESCANEAR</span>
                   </motion.div>
                 </div>
               </div>
@@ -560,7 +546,7 @@ export default function Footer() {
             {/* Newsletter Section - Más espacio */}
             <div className="md:col-span-4 space-y-6">
               <h3 className="font-bold text-lg relative inline-block">
-                Newsletter
+                {t('footer.newsletter')}
                 <motion.span 
                   className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-[var(--color-button-bg)] to-transparent"
                   initial={{ width: 0 }}
@@ -570,7 +556,7 @@ export default function Footer() {
               </h3>
               
               <p className="text-[var(--color-primary)] parallax-element">
-                Suscríbete para recibir actualizaciones sobre nuevos proyectos y tecnologías.
+                {t('footer.newsletterInfo')}
               </p>
               
               <div className="relative parallax-element">
@@ -584,7 +570,7 @@ export default function Footer() {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>¡Gracias por suscribirte!</span>
+                    <span>{t('footer.subscribeSuccess')}</span>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
@@ -593,7 +579,7 @@ export default function Footer() {
                         type="email" 
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        placeholder="tu@email.com" 
+                        placeholder={t('footer.emailPlaceholder')}
                         className="w-full px-4 py-2 bg-[var(--color-background)]/80 border border-[var(--color-border)] rounded-lg placeholder-[var(--color-primary)]/50 focus:outline-none focus:border-[var(--color-button-bg)]"
                         required
                       />
@@ -618,7 +604,7 @@ export default function Footer() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                     >
-                      <span>Suscribir</span>
+                      <span>{t('footer.subscribe')}</span>
                       <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
@@ -631,13 +617,13 @@ export default function Footer() {
               <div className="mt-12 parallax-element">
                 <h4 className="font-medium text-base mb-3 flex items-center">
                   <span className="w-5 h-5 rounded-full bg-[var(--color-button-bg)]/10 flex items-center justify-center text-[var(--color-button-bg)] mr-2">?</span>
-                  Preguntas Frecuentes
+                  {t('footer.frequentQuestions')}
                 </h4>
                 
                 <div className="space-y-4">
                   {[
-                    { q: "¿Qué servicios ofrecen?", a: "Desarrollo web, ciberseguridad y consultoría tecnológica." },
-                    { q: "¿Cómo puedo solicitar un presupuesto?", a: "Contáctanos a través del formulario o email para una cotización personalizada." }
+                    { q: t('footer.faqQuestion1'), a: t('footer.faqAnswer1') },
+                    { q: t('footer.faqQuestion2'), a: t('footer.faqAnswer2') }
                   ].map((item, idx) => (
                     <motion.div 
                       key={idx}
@@ -715,29 +701,30 @@ export default function Footer() {
           </div>
           
           {/* Footer Bottom Section - Mejor espaciado */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-[var(--color-primary)] text-sm">
-              © {currentYear} TempestGF. Todos los derechos reservados.
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+            <div className="text-[var(--color-primary)] text-sm text-center md:text-left">
+              © {currentYear} TempestGF. {t('footer.rightsReserved')}
             </div>
             
-            <div className="flex gap-8">
+            <div className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-8">
               <Link href="/privacy" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                Política de Privacidad
+                {t('footer.privacyPolicy')}
               </Link>
               <Link href="/terms" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                Términos de Servicio
+                {t('footer.termsOfService')}
               </Link>
               <Link href="/cookies" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-button-bg)] transition-colors">
-                Cookies
+                {t('footer.cookies')}
               </Link>
             </div>
             
-            {/* Back To Top Button - Ajuste de posición */}
+            {/* Back To Top Button - Ajuste de posición y visibilidad */}
             <motion.button
               onClick={scrollToTop}
-              className="group w-12 h-12 rounded-full flex items-center justify-center border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] transition-all"
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.9 }}
+              aria-label={t('footer.backToTop')}
+              className="group w-12 h-12 rounded-full flex items-center justify-center border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] hover:bg-[var(--color-background)]/50 transition-all shadow-lg"
+              whileHover={{ y: -3, boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}
+              whileTap={{ scale: 0.95 }}
             >
               <svg className="w-5 h-5 transform group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />

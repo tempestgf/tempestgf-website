@@ -81,9 +81,9 @@ const HeroSection = () => {
     [isMobile, isTablet, isLowPowerDevice, prefersReducedData]
   );
 
-  // Apply quality settings
-  const rotateX = useTransform(y, [-300, 300], [qualitySettings.tiltFactor, -qualitySettings.tiltFactor]);
-  const rotateY = useTransform(x, [-300, 300], [-qualitySettings.tiltFactor, qualitySettings.tiltFactor]);
+  // Apply quality settings pero con valores fijos (0) para eliminar inclinación
+  const rotateX = useTransform(y, [-300, 300], [0, 0]);
+  const rotateY = useTransform(x, [-300, 300], [0, 0]);
   
   // Setup hero effects with memoized dependencies
   const { 
@@ -117,14 +117,35 @@ const HeroSection = () => {
     setCurrentCodeLine
   });
 
-  // Optimize background transforms
-  const bgFactorM = isMobile ? 0.5 : 1;
-  const bgLayer1X = useTransform(x, [-300, 300], [-15 * bgFactorM, 15 * bgFactorM]);
-  const bgLayer1Y = useTransform(y, [-300, 300], [-15 * bgFactorM, 15 * bgFactorM]);
-  const bgLayer2X = useTransform(x, [-300, 300], [-30 * bgFactorM, 30 * bgFactorM]);
-  const bgLayer2Y = useTransform(y, [-300, 300], [-30 * bgFactorM, 30 * bgFactorM]);
-  const bgLayer3X = useTransform(x, [-300, 300], [-45 * bgFactorM, 45 * bgFactorM]);
-  const bgLayer3Y = useTransform(y, [-300, 300], [-45 * bgFactorM, 45 * bgFactorM]);
+  // Eliminar transformaciones del fondo basadas en el movimiento del mouse
+  const bgFactorM = 0;
+  const bgLayer1X = useTransform(x, [-300, 300], [0, 0]);
+  const bgLayer1Y = useTransform(y, [-300, 300], [0, 0]);
+  const bgLayer2X = useTransform(x, [-300, 300], [0, 0]);
+  const bgLayer2Y = useTransform(y, [-300, 300], [0, 0]);
+  const bgLayer3X = useTransform(x, [-300, 300], [0, 0]);
+  const bgLayer3Y = useTransform(y, [-300, 300], [0, 0]);
+
+  // Estado para almacenar la altura de la ventana
+  const [windowHeight, setWindowHeight] = useState(0);
+  
+  // Actualizar altura de la ventana al montar y cuando cambie el tamaño
+  useEffect(() => {
+    const updateWindowHeight = () => {
+      if (typeof window !== 'undefined') {
+        setWindowHeight(window.innerHeight);
+      }
+    };
+    
+    // Actualizar altura inicial
+    updateWindowHeight();
+    
+    // Agregar listener para cambios de tamaño
+    window.addEventListener('resize', updateWindowHeight);
+    
+    // Limpiar listener al desmontar
+    return () => window.removeEventListener('resize', updateWindowHeight);
+  }, []);
 
   // Main initialization
   useEffect(() => {
@@ -141,11 +162,14 @@ const HeroSection = () => {
     }
   }, []);
 
-  // Scroll to About section function
+  // Scroll to About section function - simplificada para usar scroll-margin-top
   const scrollToAbout = useCallback(() => {
     const aboutSection = document.getElementById('about');
     if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: isLowResourceMode ? 'auto' : 'smooth' });
+      aboutSection.scrollIntoView({ 
+        behavior: isLowResourceMode ? 'auto' : 'smooth',
+        block: 'start'
+      });
     }
   }, [isLowResourceMode]);
 
@@ -159,13 +183,15 @@ const HeroSection = () => {
       ref={sectionRef}
       id="home"
       aria-label="Sección principal"
-      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[var(--color-background)] transition-theme touch-manipulation pt-20 sm:pt-24"
-      style={{ paddingTop: `${headerHeight + 10}px` }} // Dynamic padding based on header height
-      onMouseMove={!isLowResourceMode ? handleMouseMove : undefined}
-      onMouseLeave={!isLowResourceMode ? handleMouseLeave : undefined}
+      className="relative flex items-center justify-center overflow-hidden bg-[var(--color-background)] transition-theme touch-manipulation pt-20 sm:pt-24"
+      style={{ 
+        paddingTop: `${headerHeight}px`,
+        minHeight: isMobile && windowHeight > 0 ? `${windowHeight}px` : '100vh',
+        height: isMobile && windowHeight > 0 ? `${windowHeight}px` : 'auto'
+      }}
     >
-      {/* Custom cursor effect - hide on mobile or low resource */}
-      {!isLowResourceMode && (
+      {/* Custom cursor effect - solo en desktop */}
+      {!isMobile && !isLowResourceMode && (
         <CursorEffect 
           isMobile={isMobile}
           isLowPowerDevice={isLowPowerDevice}
@@ -177,40 +203,43 @@ const HeroSection = () => {
         />
       )}
       
-      {/* Background elements */}
-      <HeroBackground 
-        isMobile={isMobile}
-        isLowPowerDevice={isLowPowerDevice}
-        particleSystem={particleSystem}
-        scanLineActive={scanLineActive}
-        showFlare={showFlare}
-        glitchActive={glitchActive}
-        showDataStream={showDataStream}
-        hexGrid={hexGrid}
-        pulseFrequency={pulseFrequency}
-        bgLayer1X={bgLayer1X}
-        bgLayer1Y={bgLayer1Y}
-        bgLayer2X={bgLayer2X}
-        bgLayer2Y={bgLayer2Y}
-        bgLayer3X={bgLayer3X}
-        bgLayer3Y={bgLayer3Y}
-        turbulence={turbulence}
-      />
+      {/* Background elements - solo en desktop */}
+      {!isMobile && (
+        <HeroBackground 
+          isMobile={isMobile}
+          isLowPowerDevice={isLowPowerDevice}
+          particleSystem={particleSystem}
+          scanLineActive={scanLineActive}
+          showFlare={showFlare}
+          glitchActive={glitchActive}
+          showDataStream={showDataStream}
+          hexGrid={hexGrid}
+          pulseFrequency={pulseFrequency}
+          bgLayer1X={bgLayer1X}
+          bgLayer1Y={bgLayer1Y}
+          bgLayer2X={bgLayer2X}
+          bgLayer2Y={bgLayer2Y}
+          bgLayer3X={bgLayer3X}
+          bgLayer3Y={bgLayer3Y}
+          turbulence={turbulence}
+        />
+      )}
 
-      {/* Main Content with 3D depth effects */}
+      {/* Main Content con efecto 3D desactivado */}
       <div 
         ref={containerRef}
-        className="relative z-10 w-full max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 flex flex-col lg:flex-row items-center gap-5 md:gap-8 lg:gap-12 mt-6 sm:mt-8"
+        className="relative z-10 w-full max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 flex flex-col lg:flex-row items-center gap-5 md:gap-8 lg:gap-12"
         style={{ 
           perspective: isMobile ? 1500 : 2500,
+          marginTop: isMobile ? '20px' : '32px',
+          marginBottom: isMobile ? '60px' : '40px'
         }}
       >
-        {/* Left content - Title and description */}
+        {/* Left content - sin efecto de movimiento con el mouse */}
         <motion.div 
           className="flex-1 w-full space-y-4 sm:space-y-6 backdrop-blur-lg rounded-xl sm:rounded-2xl bg-[var(--color-background)]/5 p-3 sm:p-4 lg:p-8 border border-[var(--color-border)]/30 relative overflow-hidden"
           style={{
-            rotateX,
-            rotateY,
+            // Sin valores de rotación
             transformStyle: "preserve-3d",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
           }}
@@ -230,8 +259,8 @@ const HeroSection = () => {
           {/* Glass morphism effect enhancement */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-black/0 dark:from-white/5 dark:to-black/20 z-0"></div>
           
-          {/* Dynamic color glow effect */}
-          {activeAttention === "title" && !isLowResourceMode && (
+          {/* Dynamic color glow effect - Solo en desktop */}
+          {activeAttention === "title" && !isLowResourceMode && !isMobile && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -247,31 +276,33 @@ const HeroSection = () => {
           )}
           
           <div className="space-y-3 sm:space-y-4 md:space-y-6 relative z-10">
-            {/* Title section */}
+            {/* Title section - siempre visible */}
             <HeroTitle isMobile={isMobile} />
             
-            {/* Description section */}
+            {/* Description section - siempre visible */}
             <HeroDescription isMobile={isMobile} />
           </div>
         </motion.div>
         
-        {/* Right content - Terminal/Code Visualization */}
-        <HeroTerminalWrapper
-          rotateX={rotateX.get()}
-          rotateY={rotateY.get()}
-          activeAttention={activeAttention}
-          terminalRef={terminalRef}
-          terminalComponent={terminalComponent}
-          isMobile={isMobile}
-          isLowResourceMode={isLowResourceMode}
-        />
+        {/* Right content - Terminal/Code Visualization - Solo en desktop */}
+        {!isMobile && (
+          <HeroTerminalWrapper
+            rotateX={rotateX.get()}
+            rotateY={rotateY.get()}
+            activeAttention={activeAttention}
+            terminalRef={terminalRef}
+            terminalComponent={terminalComponent}
+            isMobile={isMobile}
+            isLowResourceMode={isLowResourceMode}
+          />
+        )}
       </div>
       
       {/* Decorative cyber element - bottom corner - only on desktop */}
       {!isMobile && !isLowResourceMode && <DecorativeElement />}
       
       {/* Scroll indicator - simplified - move up on mobile */}
-      <div className={`${isMobile ? "mb-6 mt-2" : ""}`}>
+      <div className={`${isMobile ? "absolute bottom-8 left-0 right-0" : "absolute bottom-10 left-0 right-0"}`}>
         <ScrollIndicator scrollToAbout={scrollToAbout} isLowResourceMode={isLowResourceMode} />
       </div>
     </section>

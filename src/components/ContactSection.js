@@ -3,8 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ContactSection() {
+  const { t } = useTranslation();
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -168,22 +170,7 @@ export default function ContactSection() {
           }}
           className="text-center mb-16"
         >        
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 relative inline-block">
-            <span className="text-[var(--color-foreground)]">Get in </span>
-            <motion.span
-              className="text-[var(--color-button-bg)]"
-              animate={{
-                textShadow: [
-                  '0 0 5px rgba(255,102,0,0.5)',
-                  '0 0 15px rgba(255,102,0,0.8)',
-                  '0 0 5px rgba(255,102,0,0.5)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              Touch
-            </motion.span>
-          </h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 relative inline-block" dangerouslySetInnerHTML={{ __html: t('contact.title') }} />
           
           <motion.p
             className="max-w-2xl mx-auto text-[var(--color-primary)] text-lg"
@@ -192,7 +179,7 @@ export default function ContactSection() {
               visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.8 } }
             }}
           >
-            Have a project in mind or want to collaborate? Feel free to reach out using the form below. I'll get back to you as soon as possible.
+            {t('contact.subtitle')}
           </motion.p>
         </motion.div>
         
@@ -220,7 +207,7 @@ export default function ContactSection() {
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                   </svg>
                 </div>
-                Email
+                {t('contact.email')}
               </h3>
               <p className="text-[var(--color-primary)] ml-11">tempestgf@protonmail.com</p>
             </div>
@@ -235,7 +222,7 @@ export default function ContactSection() {
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </svg>
                 </div>
-                Location
+                {t('contact.location')}
               </h3>
               <p className="text-[var(--color-primary)] ml-11">Barcelona, Spain</p>
             </div>
@@ -250,7 +237,7 @@ export default function ContactSection() {
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
                 </div>
-                Social Media
+                {t('contact.socialMedia')}
               </h3>
               <div className="flex space-x-4 ml-11">
                 {['twitter', 'github', 'linkedin', 'discord'].map((platform) => (
@@ -326,7 +313,7 @@ export default function ContactSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    {formStatus.success ? 'Thank You!' : 'Something went wrong'}
+                    {formStatus.success ? t('contact.form.success') : t('contact.form.error')}
                   </motion.h3>
                   
                   <motion.p 
@@ -335,7 +322,7 @@ export default function ContactSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                   >
-                    {formStatus.message}
+                    {formStatus.success ? t('contact.form.successMessage') : t('contact.form.errorMessage')}
                   </motion.p>
                   
                   <motion.button
@@ -347,7 +334,7 @@ export default function ContactSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    Send another message
+                    {t('contact.form.sendAnother')}
                   </motion.button>
                 </motion.div>
               ) : (
@@ -371,7 +358,7 @@ export default function ContactSection() {
                         htmlFor="name"
                         className={`absolute text-sm text-[var(--color-primary)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[var(--color-background)] px-2 peer-focus:px-2 peer-focus:text-[var(--color-button-bg)] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3`}
                       >
-                        Name
+                        {t('contact.form.name')}
                       </label>
                       {activeField === 'name' && (
                         <motion.div
@@ -403,7 +390,7 @@ export default function ContactSection() {
                         htmlFor="email"
                         className={`absolute text-sm text-[var(--color-primary)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[var(--color-background)] px-2 peer-focus:px-2 peer-focus:text-[var(--color-button-bg)] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3`}
                       >
-                        Email
+                        {t('contact.form.email')}
                       </label>
                       {activeField === 'email' && (
                         <motion.div
@@ -435,7 +422,7 @@ export default function ContactSection() {
                         htmlFor="subject"
                         className={`absolute text-sm text-[var(--color-primary)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[var(--color-background)] px-2 peer-focus:px-2 peer-focus:text-[var(--color-button-bg)] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3`}
                       >
-                        Subject
+                        {t('contact.form.subject')}
                       </label>
                       {activeField === 'subject' && (
                         <motion.div
@@ -467,7 +454,7 @@ export default function ContactSection() {
                         htmlFor="message"
                         className={`absolute text-sm text-[var(--color-primary)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[var(--color-background)] px-2 peer-focus:px-2 peer-focus:text-[var(--color-button-bg)] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-6 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3`}
                       >
-                        Message
+                        {t('contact.form.message')}
                       </label>
                       {activeField === 'message' && (
                         <motion.div
@@ -496,14 +483,14 @@ export default function ContactSection() {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                               </svg>
-                              Sending...
+                              {t('contact.form.sending')}
                             </>
                           ) : (
                             <>
                               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                               </svg>
-                              Send Message
+                              {t('contact.form.send')}
                             </>
                           )}
                         </span>

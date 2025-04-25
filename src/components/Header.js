@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useTranslation } from "../hooks/useTranslation";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const navLinkVariants = {
   hidden: { opacity: 0, y: -10 },
@@ -19,6 +21,7 @@ const underlineVariants = {
 const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) => {
   const [hoverLink, setHoverLink] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const { t, language } = useTranslation();
   
   // Track scroll progress for animations
   useEffect(() => {
@@ -31,6 +34,12 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Traducir enlaces de navegación
+  const translatedNavLinks = navLinks.map(link => ({
+    ...link,
+    name: t(`navigation.${link.id}`)
+  }));
 
   return (
     <header
@@ -59,7 +68,22 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
         {/* Enhanced Logo with animated elements */}
         <Link href="/" className="flex items-center group relative">
-          <div className="absolute -inset-2 rounded-lg bg-gradient-to-r from-[var(--color-button-bg)]/0 to-[var(--color-button-bg)]/0 group-hover:from-[var(--color-button-bg)]/10 group-hover:to-[var(--color-button-bg)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {/* Fondo simple con hover estático */}
+          <div 
+            className="absolute -inset-2 rounded-lg bg-gradient-to-r from-[var(--color-button-bg)]/10 to-[var(--color-button-bg)]/5 opacity-0 group-hover:opacity-100 transition-all duration-300"
+          >
+            {/* Líneas decorativas horizontales estáticas */}
+            <div className="absolute top-[20%] left-0 h-[1px] w-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute top-[40%] left-0 h-[1px] w-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute top-[60%] left-0 h-[1px] w-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute top-[80%] left-0 h-[1px] w-full bg-[var(--color-button-bg)]/20"></div>
+            
+            {/* Líneas decorativas verticales estáticas */}
+            <div className="absolute left-[20%] top-0 w-[1px] h-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute left-[40%] top-0 w-[1px] h-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute left-[60%] top-0 w-[1px] h-full bg-[var(--color-button-bg)]/20"></div>
+            <div className="absolute left-[80%] top-0 w-[1px] h-full bg-[var(--color-button-bg)]/20"></div>
+          </div>
           
           <motion.div
             initial={{ opacity: 0, y: -15 }}
@@ -68,56 +92,47 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
             className="flex flex-col relative"
           >
             <div className="flex items-center">
-              {/* Logo icon */}
-              <motion.div 
-                className="mr-2 w-8 h-8 rounded-md bg-[var(--color-button-bg)]/90 flex items-center justify-center relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)]"></div>
-                <motion.span 
-                  className="relative text-white font-bold text-xl"
-                  animate={{ y: [-1, 1, -1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  T
-                </motion.span>
-                <motion.div 
-                  className="absolute inset-0 border border-white/20"
-                  animate={{ opacity: [0.2, 0.5, 0.2] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-              </motion.div>
+              {/* Icono simplificado */}
+              <div className="w-10 h-10 mr-3 relative flex items-center justify-center group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)]/20 to-transparent rounded-lg transition-all duration-300 group-hover:from-[var(--color-button-bg)]/40"></div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 relative z-10 transition-all duration-300 group-hover:text-[var(--color-button-bg)]">
+                  <path 
+                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
               
-              {/* Brand name with letter animation */}
+              {/* Texto de marca simplificado */}
               <h1 className="text-2xl font-bold text-[var(--color-foreground)] tracking-wide">
                 {Array.from("tempest").map((letter, i) => (
-                  <motion.span 
+                  <span 
                     key={i}
-                    className="inline-block"
-                    whileHover={{ y: -2, color: 'var(--color-button-bg)' }}
-                    transition={{ type: 'spring', stiffness: 500 }}
+                    className="inline-block transition-all duration-200 hover:text-[var(--color-button-bg)] hover:-translate-y-[2px]"
                   >
                     {letter}
-                  </motion.span>
+                  </span>
                 ))}
               </h1>
             </div>
-            <p className="text-sm font-medium text-[var(--color-primary)] ml-10">
-              <motion.span
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1, delay: 0.8 }}
-                className="inline-block overflow-hidden whitespace-nowrap"
-              >
-                Innovación en desarrollo digital
-              </motion.span>
-            </p>
+            
+            {/* Subtexto traducido */}
+            <div className="text-sm font-medium text-[var(--color-primary)] ml-10 overflow-hidden">
+              <span className="inline-block overflow-hidden whitespace-nowrap">
+                {t('header.subtitle')}
+              </span>
+            </div>
           </motion.div>
         </Link>
 
-        {/* Enhanced Navigation for desktop */}
+        {/* Enhanced Navigation for desktop with translated links */}
         <nav className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link, index) => (
+          {translatedNavLinks.map((link, index) => (
             <motion.div
               key={link.id}
               custom={index}
@@ -167,6 +182,9 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
             </motion.div>
           ))}
           
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+          
           {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -179,7 +197,7 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="relative z-10">Contacto</span>
+                <span className="relative z-10">{t('header.ctaButton')}</span>
                 <motion.div 
                   className="absolute inset-0 bg-gradient-to-r from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)]"
                   animate={{ x: ['-100%', '100%'] }}
@@ -193,7 +211,7 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
         {/* Enhanced Mobile Menu Button */}
         <motion.button
           onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Menú móvil"
+          aria-label={t('header.mobileMenu')}
           className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center rounded-md focus:outline-none border border-transparent transition-colors"
           whileHover={{ backgroundColor: 'rgba(255, 102, 0, 0.1)', borderColor: 'var(--color-button-bg)' }}
           whileTap={{ scale: 0.95 }}
@@ -243,7 +261,7 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--color-button-bg)]/30 via-transparent to-[var(--color-button-bg)]/30"></div>
             
             <ul className="flex flex-col items-center space-y-4 py-6">
-              {navLinks.map((link, index) => (
+              {translatedNavLinks.map((link, index) => (
                 <motion.li
                   key={link.id}
                   custom={index}
@@ -289,23 +307,39 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
                 </motion.li>
               ))}
               
+              {/* Mobile Language Switcher */}
+              <motion.li
+                variants={{
+                  hidden: { opacity: 0, y: -20 },
+                  visible: { opacity: 1, y: 0, transition: { delay: translatedNavLinks.length * 0.1 } }
+                }}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="w-full max-w-xs"
+              >
+                <div className="px-8 py-3">
+                  <LanguageSwitcher />
+                </div>
+              </motion.li>
+              
               {/* Mobile CTA Button */}
               <motion.li
                 variants={{
                   hidden: { opacity: 0, y: -20 },
-                  visible: { opacity: 1, y: 0, transition: { delay: navLinks.length * 0.1 } }
+                  visible: { opacity: 1, y: 0, transition: { delay: (translatedNavLinks.length + 1) * 0.1 } }
                 }}
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
                 className="w-full max-w-xs pt-4"
               >
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>
                   <motion.button 
                     className="w-full py-3 rounded-md bg-[var(--color-button-bg)] text-white font-medium"
                     whileTap={{ scale: 0.98 }}
                   >
-                    Contacto
+                    {t('header.ctaButton')}
                   </motion.button>
                 </Link>
               </motion.li>
