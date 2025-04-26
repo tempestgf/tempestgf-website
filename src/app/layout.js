@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "../hooks/useTranslation";
+import ClientWrapper from "../components/ClientWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
       >
         <LanguageProvider>
           {children}
+          <ClientWrapper />
         </LanguageProvider>
       </body>
     </html>

@@ -72,20 +72,32 @@ export default function ContactSection() {
     setSending(true);
     
     try {
-      // Here you would implement your actual form submission logic
-      // For now, we'll just simulate a successful submission after a delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setFormStatus({
-        submitted: true,
-        success: true,
-        message: 'Your message has been sent successfully! We will contact you soon.'
+      // Enviar los datos del formulario a nuestra API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
       });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setFormStatus({
+          submitted: true,
+          success: true,
+          message: t('contact.form.successMessage')
+        });
+      } else {
+        throw new Error(data.message || 'Error desconocido');
+      }
     } catch (error) {
+      console.error('Error al enviar el formulario:', error);
       setFormStatus({
         submitted: true,
         success: false,
-        message: 'There was an error sending your message. Please try again later.'
+        message: t('contact.form.errorMessage')
       });
     } finally {
       setSending(false);

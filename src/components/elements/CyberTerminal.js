@@ -255,13 +255,6 @@ const CyberTerminal = memo(({
     }
   }, [inputValue, processCommand]);
   
-  // Enfocar en el input cuando se complete la animación inicial
-  useEffect(() => {
-    if (isInitialAnimationComplete && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isInitialAnimationComplete]);
-  
   // Hacer click en terminal enfoca el input
   const handleTerminalClick = useCallback(() => {
     if (inputRef.current && isInitialAnimationComplete) {
@@ -315,23 +308,17 @@ const CyberTerminal = memo(({
       {/* Terminal content - optimized for mobile */}
       <div 
         ref={terminalRef}
-        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 overflow-y-auto font-mono text-[var(--color-foreground)] bg-[var(--color-background)]/40 relative terminal-content"
+        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 overflow-y-auto font-mono text-[var(--color-foreground)] bg-[var(--color-background)]/40 relative terminal-content custom-scrollbar"
         style={{ 
           fontSize: isMobile ? '0.65rem' : '0.8rem',
           lineHeight: 1.5,
           overflowY: 'auto',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
         }}
         onScroll={e => e.stopPropagation()}
       >
         <style dangerouslySetInnerHTML={{
           __html: `
-            .terminal-content::-webkit-scrollbar {
-              display: none;
-              width: 0;
-              height: 0;
-            }
+            /* Estilos de scrollbar ahora están en globals.css con la clase .custom-scrollbar */
           `
         }} />
         
