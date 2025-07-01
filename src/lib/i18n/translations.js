@@ -103,35 +103,42 @@ export const translations = {
           web: "Web",
           databases: "Bases de datos",
           mobile: "Móvil",
-          security: "Seguridad"
+          security: "Seguridad",
+          ai: "Inteligencia Artificial"
         },
         items: {
           languages: ["C", "C++", "Java", "Python", "JavaScript"],
           web: ["Node.js", "React", "Next.js", "TailwindCSS"],
           databases: ["MySQL", "MongoDB"],
           mobile: ["Android Studio"],
-          security: ["Seguridad de redes", "Análisis de malware", "Pruebas de penetración"]
+          security: ["Seguridad de redes", "Análisis de malware", "Pruebas de penetración"],
+          ai: ["Claude", "MCP", "OCR", "Fine Tuning"]
         }
       },
       projects: [
         {
-          name: "Servidor de Red Tor",
-          description: "Desarrollé e implementé un servidor seguro a través de la red Tor, garantizando el anonimato y la seguridad para comunicaciones sensibles."
+          name: "Geneon",
+          description: "Página web empresarial que he desarrollado para ofrecer servicios de desarrollo web con inteligencia artificial integrada y presencia digital moderna.",
+          link: "https://geneon.es"
         },
         {
-          name: "Investigación de Malware para Windows",
-          description: "Creé malware indetectable para Windows a través de Tor con fines de investigación ética y pruebas de penetración."
+          name: "Servidor de Red Tor",
+          description: "Desarrollé e implementé un servidor seguro a través de la red Tor, garantizando el anonimato y la seguridad para comunicaciones sensibles.",
+          link: "https://github.com/tempestgf/DarkHost"
         },
         {
           name: "Extractor de Datos de Recibos",
-          description: "Desarrollé una aplicación web que extrae y procesa automáticamente datos de fotos de tickets en hojas de cálculo Excel."
+          description: "Desarrollé una aplicación web que extrae y procesa automáticamente datos de fotos de tickets en hojas de cálculo Excel.",
+          link: "https://tickets.tempestgf.es"
         },
         {
           name: "Configuración Personalizada de Arch Linux",
-          description: "Entorno Arch Linux personalizado con dotfiles a medida para flujos de trabajo de desarrollo óptimos."
+          description: "Entorno Arch Linux personalizado con dotfiles a medida para flujos de trabajo de desarrollo óptimos.",
+          link: "https://github.com/tempestgf/dotfiles"
         }
       ],
       viewDetails: "Ver detalles",
+      viewProject: "Ver proyecto",
       techEnvironment: {
         title: "Entorno Tecnológico",
         items: [
@@ -195,6 +202,35 @@ export const translations = {
       selectLanguage: "Selecciona un idioma",
       active: "activo",
       close: "Cerrar"
+    },
+    chatAssistant: {
+      title: "Asistente Virtual",
+      statusActive: "Activo",
+      welcomeTitle: "¡Hola! Soy tu asistente virtual.",
+      welcomeMessage: "Estoy aquí para ayudarte con cualquier duda sobre la página web. ¿En qué puedo asistirte hoy?",
+      suggestions: ["¿Qué servicios ofrecen?", "Contacto", "Proyectos recientes"],
+      inputPlaceholder: "Escribe tu mensaje...",
+      send: "Enviar",
+      poweredBy: "Powered by Google Gemini 2.5 Flash",
+      errorConnection: "Lo siento, ha ocurrido un error de conexión. Por favor, verifica tu conexión a internet e intenta de nuevo.",
+      errorGeneral: "Lo siento, ha ocurrido un error. Por favor, intenta de nuevo más tarde.",
+      loading: "Cargando..."
+    },
+    blog: {
+      comingSoon: {
+        title: "Próximamente",
+        description: "Estoy trabajando en un blog increíble donde compartiré mis conocimientos sobre ciberseguridad, desarrollo web e inteligencia artificial. ¡Mantente atento!",
+        features: {
+          security: "Ciberseguridad",
+          securityDesc: "Tutoriales y análisis sobre seguridad informática",
+          ai: "IA & Automatización",
+          aiDesc: "Artículos sobre inteligencia artificial y automatización",
+          development: "Desarrollo Web",
+          developmentDesc: "Guías y mejores prácticas de desarrollo"
+        },
+        backHome: "Volver al Inicio",
+        progress: "Progreso de desarrollo"
+      }
     }
   },
   ca: {
@@ -301,35 +337,42 @@ export const translations = {
           web: "Web",
           databases: "Bases de dades",
           mobile: "Mòbil",
-          security: "Seguretat"
+          security: "Seguretat",
+          ai: "Intel·ligència Artificial"
         },
         items: {
           languages: ["C", "C++", "Java", "Python", "JavaScript"],
           web: ["Node.js", "React", "Next.js", "TailwindCSS"],
           databases: ["MySQL", "MongoDB"],
           mobile: ["Android Studio"],
-          security: ["Seguretat de xarxes", "Anàlisi de malware", "Proves de penetració"]
+          security: ["Seguretat de xarxes", "Anàlisi de malware", "Proves de penetració"],
+          ai: ["Claude", "MCP", "OCR", "Fine Tuning"]
         }
       },
       projects: [
         {
-          name: "Servidor de Xarxa Tor",
-          description: "Vaig desenvolupar i implementar un servidor segur a través de la xarxa Tor, garantint l'anonimat i la seguretat per a comunicacions sensibles."
+          name: "Geneon",
+          description: "Pàgina web empresarial que he desenvolupat per oferir serveis de desenvolupament web amb intel·ligència artificial integrada i presència digital moderna.",
+          link: "https://geneon.es"
         },
         {
-          name: "Investigació de Malware per a Windows",
-          description: "Vaig crear malware indetectable per a Windows a través de Tor amb finalitats d'investigació ètica i proves de penetració."
+          name: "Servidor de Xarxa Tor",
+          description: "Vaig desenvolupar i implementar un servidor segur a través de la xarxa Tor, garantint l'anonimat i la seguretat per a comunicacions sensibles.",
+          link: "https://github.com/tempestgf/DarkHost"
         },
         {
           name: "Extractor de Dades de Rebuts",
-          description: "Vaig desenvolupar una aplicació web que extreu i processa automàticament dades de fotos de tiquets en fulls de càlcul Excel."
+          description: "Vaig desenvolupar una aplicació web que extreu i processa automàticament dades de fotos de tiquets en fulls de càlcul Excel.",
+          link: "https://tickets.tempestgf.es"
         },
         {
           name: "Configuració Personalitzada d'Arch Linux",
-          description: "Entorn Arch Linux personalitzat amb dotfiles a mida per a fluxos de treball de desenvolupament òptims."
+          description: "Entorn Arch Linux personalitzat amb dotfiles a mida per a fluxos de treball de desenvolupament òptims.",
+          link: "https://github.com/tempestgf/dotfiles"
         }
       ],
       viewDetails: "Veure detalls",
+      viewProject: "Veure projecte",
       techEnvironment: {
         title: "Entorn Tecnològic",
         items: [
@@ -393,6 +436,35 @@ export const translations = {
       selectLanguage: "Selecciona un idioma",
       active: "actiu",
       close: "Tancar"
+    },
+    chatAssistant: {
+      title: "Assistent Virtual",
+      statusActive: "Actiu",
+      welcomeTitle: "Hola! Sóc el teu assistent virtual.",
+      welcomeMessage: "Estic aquí per ajudar-te amb qualsevol dubte sobre la pàgina web. En què puc assistir-te avui?",
+      suggestions: ["Quins serveis oferiu?", "Contacte", "Projectes recents"],
+      inputPlaceholder: "Escriu el teu missatge...",
+      send: "Enviar",
+      poweredBy: "Impulsat per Google Gemini 2.5 Flash",
+      errorConnection: "Ho sento, hi ha hagut un error de connexió. Si us plau, verifica la teva connexió a internet i torna-ho a provar.",
+      errorGeneral: "Ho sento, hi ha hagut un error. Si us plau, torna-ho a provar més tard.",
+      loading: "Carregant..."
+    },
+    blog: {
+      comingSoon: {
+        title: "Pròximament",
+        description: "Estic treballant en un blog increïble on compartiré els meus coneixements sobre ciberseguretat, desenvolupament web i intel·ligència artificial. Mantén-te atent!",
+        features: {
+          security: "Ciberseguretat",
+          securityDesc: "Tutorials i anàlisis sobre seguretat informàtica",
+          ai: "IA i Automatització",
+          aiDesc: "Articles sobre intel·ligència artificial i automatització",
+          development: "Desenvolupament Web",
+          developmentDesc: "Guies i millors pràctiques de desenvolupament"
+        },
+        backHome: "Tornar a l'Inici",
+        progress: "Progrés de desenvolupament"
+      }
     }
   },
   en: {
@@ -499,35 +571,42 @@ export const translations = {
           web: "Web",
           databases: "Databases",
           mobile: "Mobile",
-          security: "Security"
+          security: "Security",
+          ai: "Artificial Intelligence"
         },
         items: {
           languages: ["C", "C++", "Java", "Python", "JavaScript"],
           web: ["Node.js", "React", "Next.js", "TailwindCSS"],
           databases: ["MySQL", "MongoDB"],
           mobile: ["Android Studio"],
-          security: ["Network Security", "Malware Analysis", "Penetration Testing"]
+          security: ["Network Security", "Malware Analysis", "Penetration Testing"],
+          ai: ["Claude", "MCP", "OCR", "Fine Tuning"]
         }
       },
       projects: [
         {
-          name: "Tor Network Server",
-          description: "Developed and deployed a secure server through the Tor network, ensuring anonymity and security for sensitive communications."
+          name: "Geneon",
+          description: "Business website I developed to offer web development services with integrated artificial intelligence and modern digital presence.",
+          link: "https://geneon.es"
         },
         {
-          name: "Windows Malware Research",
-          description: "Created undetectable Windows malware through Tor for ethical research and penetration testing purposes."
+          name: "Tor Network Server",
+          description: "Developed and deployed a secure server through the Tor network, ensuring anonymity and security for sensitive communications.",
+          link: "https://github.com/tempestgf/DarkHost"
         },
         {
           name: "Receipt Data Extractor",
-          description: "Developed a web application that automatically extracts and processes data from ticket photos into Excel spreadsheets."
+          description: "Developed a web application that automatically extracts and processes data from ticket photos into Excel spreadsheets.",
+          link: "https://tickets.tempestgf.es"
         },
         {
           name: "Custom Arch Linux Setup",
-          description: "Personalized Arch Linux environment with custom dotfiles for optimal development workflows."
+          description: "Personalized Arch Linux environment with custom dotfiles for optimal development workflows.",
+          link: "https://github.com/tempestgf/dotfiles"
         }
       ],
       viewDetails: "View details",
+      viewProject: "View project",
       techEnvironment: {
         title: "Tech Environment",
         items: [
@@ -591,8 +670,37 @@ export const translations = {
       selectLanguage: "Select a language",
       active: "active",
       close: "Close"
+    },
+    chatAssistant: {
+      title: "Virtual Assistant",
+      statusActive: "Active",
+      welcomeTitle: "Hello! I'm your virtual assistant.",
+      welcomeMessage: "I'm here to help you with any questions about the website. How can I assist you today?",
+      suggestions: ["What services do you offer?", "Contact", "Recent projects"],
+      inputPlaceholder: "Type your message...",
+      send: "Send",
+      poweredBy: "Powered by Google Gemini 2.5 Flash",
+      errorConnection: "Sorry, a connection error has occurred. Please check your internet connection and try again.",
+      errorGeneral: "Sorry, an error has occurred. Please try again later.",
+      loading: "Loading..."
+    },
+    blog: {
+      comingSoon: {
+        title: "Coming Soon",
+        description: "I'm working on an amazing blog where I'll share my knowledge about cybersecurity, web development, and artificial intelligence. Stay tuned!",
+        features: {
+          security: "Cybersecurity",
+          securityDesc: "Tutorials and analysis on computer security",
+          ai: "AI & Automation",
+          aiDesc: "Articles about artificial intelligence and automation",
+          development: "Web Development",
+          developmentDesc: "Guides and best development practices"
+        },
+        backHome: "Back to Home",
+        progress: "Development progress"
+      }
     }
   }
 };
 
-export default translations; 
+export default translations;

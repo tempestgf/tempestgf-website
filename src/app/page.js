@@ -28,9 +28,8 @@ export default function Home() {
   const navLinks = [
     { id: "home", href: "#home", active: true },
     { id: "about", href: "#about", active: false },
-    { id: "services", href: "#services", active: false },
-    { id: "portfolio", href: "#portfolio", active: false },
-    { id: "blog", href: "#blog", active: false },
+    { id: "services", href: "https://geneon.es", active: false, external: true },
+    { id: "blog", href: "/blog", active: false },
     { id: "contact", href: "#contact", active: false },
   ];
 

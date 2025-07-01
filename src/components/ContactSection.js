@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { FaTwitter, FaGithub, FaLinkedin, FaDiscord } from 'react-icons/fa';
 import { useTranslation } from '../hooks/useTranslation';
 
 export default function ContactSection() {
@@ -19,6 +20,14 @@ export default function ContactSection() {
     success: false,
     message: ''
   });
+  
+  // Configuración de redes sociales
+  const SOCIAL_LINKS = [
+    { href: 'https://twitter.com/tempestgf', icon: FaTwitter, label: 'Twitter', color: 'hover:text-blue-400', hoverGlow: '#1DA1F2' },
+    { href: 'https://github.com/tempestgf', icon: FaGithub, label: 'GitHub', color: 'hover:text-purple-400', hoverGlow: '#6e5494' },
+    { href: 'https://linkedin.com/in/tempestgf', icon: FaLinkedin, label: 'LinkedIn', color: 'hover:text-blue-500', hoverGlow: '#0A66C2' },
+    { href: 'https://discord.com/users/tempestgf', icon: FaDiscord, label: 'Discord', color: 'hover:text-indigo-400', hoverGlow: '#5865F2' },
+  ];
   
   const [activeField, setActiveField] = useState(null);
   const [sending, setSending] = useState(false);
@@ -246,26 +255,60 @@ export default function ContactSection() {
               <h3 className="text-xl font-bold mb-4 flex items-center text-[var(--color-foreground)]">
                 <div className="w-8 h-8 mr-3 rounded-full bg-[var(--color-button-bg)]/10 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--color-button-bg)]" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
                   </svg>
                 </div>
                 {t('contact.socialMedia')}
               </h3>
-              <div className="flex space-x-4 ml-11">
-                {['twitter', 'github', 'linkedin', 'discord'].map((platform) => (
+              
+              {/* Redes sociales mejoradas */}
+              <div className="flex space-x-3 ml-11">
+                {SOCIAL_LINKS.map(({ href, icon: Icon, label, color, hoverGlow }) => (
                   <motion.a
-                    key={platform}
-                    href={`https://${platform}.com/tempestgf`}
+                    key={href}
+                    href={href}
+                    aria-label={label}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-primary)] hover:text-[var(--color-button-bg)] hover:border-[var(--color-button-bg)] transition-all"
-                    whileHover={{ y: -3, scale: 1.1 }}
+                    className={`w-10 h-10 flex items-center justify-center rounded-lg bg-[var(--color-background)] text-[var(--color-foreground)] ${color} transition-all duration-300 relative group/icon overflow-hidden backdrop-blur-sm border border-[var(--color-border)]`}
+                    whileHover={{ 
+                      y: -3,
+                      boxShadow: `0 5px 15px -5px ${hoverGlow}80`
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <span className="sr-only">{platform}</span>
-                    <svg className="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" />
-                    </svg>
+                    {/* Background highlight effect on hover */}
+                    <motion.div 
+                      className="absolute inset-0 opacity-0 group-hover/icon:opacity-20"
+                      style={{ backgroundColor: hoverGlow }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    
+                    {/* Icon */}
+                    <Icon className="w-4 h-4 relative z-10 group-hover/icon:scale-110 transition-transform duration-300" />
+                    
+                    {/* Border glow effect */}
+                    <motion.div 
+                      className="absolute inset-0 opacity-0 group-hover/icon:opacity-100 border-2 rounded-lg"
+                      style={{ borderColor: hoverGlow }}
+                      initial={{ opacity: 0 }}
+                      whileHover={{ 
+                        opacity: 1,
+                        boxShadow: `0 0 10px ${hoverGlow}50`
+                      }}
+                    />
+                    
+                    {/* Circle ping effect on hover */}
+                    <motion.div
+                      className="absolute inset-0 rounded-lg opacity-0 group-hover/icon:opacity-100"
+                      initial={{ scale: 0 }}
+                      whileHover={{
+                        scale: [0, 1.2],
+                        opacity: [0.7, 0],
+                        transition: { duration: 1, repeat: Infinity }
+                      }}
+                      style={{ border: `2px solid ${hoverGlow}` }}
+                    />
                   </motion.a>
                 ))}
               </div>

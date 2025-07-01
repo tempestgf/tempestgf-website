@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
 
 const ChatAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ const ChatAssistant = () => {
   const [activeField, setActiveField] = useState(null);
   const [buttonHover, setButtonHover] = useState(false);
   const chatContainerRef = useRef(null);
+  const { t } = useTranslation();
 
   // Verificar si está en el lado cliente
   useEffect(() => {
@@ -55,14 +57,14 @@ const ChatAssistant = () => {
         console.error('Error en la respuesta del servidor:', data.error);
         setChatHistory(prev => [...prev, { 
           sender: 'assistant', 
-          text: data.response || 'Lo siento, ha ocurrido un error. Por favor, intenta de nuevo más tarde.'
+          text: data.response || t('chatAssistant.errorGeneral')
         }]);
       }
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       setChatHistory(prev => [...prev, { 
         sender: 'assistant', 
-        text: 'Lo siento, ha ocurrido un error de conexión. Por favor, verifica tu conexión a internet e intenta de nuevo.'
+        text: t('chatAssistant.errorConnection')
       }]);
     } finally {
       setIsLoading(false);
@@ -135,7 +137,7 @@ const ChatAssistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="absolute bottom-20 right-0 w-[420px] sm:w-[500px] bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden backdrop-blur-sm"
+            className="absolute bottom-20 right-0 w-[90vw] sm:w-[420px] md:w-[500px] bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden backdrop-blur-sm"
           >
             {/* Elementos decorativos en las esquinas */}
             <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[var(--color-button-bg)]/40 opacity-70"></div>
@@ -159,7 +161,7 @@ const ChatAssistant = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                   </svg>
                 </div>
-                Asistente Virtual
+                {t('chatAssistant.title')}
               </h3>
               <div className="flex items-center mt-2 relative z-10 ml-12">
                 <motion.span 
@@ -170,14 +172,14 @@ const ChatAssistant = () => {
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <p className="text-xs text-white/80">Activo</p>
+                <p className="text-xs text-white/80">{t('chatAssistant.statusActive')}</p>
               </div>
             </div>
             
             {/* Historial de chat mejorado */}
             <div 
               ref={chatContainerRef}
-              className="p-5 h-[450px] overflow-y-auto bg-[var(--color-background)]/90 relative scrollbar-hide"
+              className="p-5 h-[50vh] sm:h-[450px] overflow-y-auto bg-[var(--color-background)]/90 relative scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {/* Estilos para ocultar scrollbar */}
@@ -287,16 +289,16 @@ const ChatAssistant = () => {
                     transition={{ delay: 0.3 }}
                   >
                     <h4 className="text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-foreground)] via-[var(--color-foreground)] to-[var(--color-button-bg)]">
-                      ¡Hola! Soy tu asistente virtual.
+                      {t('chatAssistant.welcomeTitle')}
                     </h4>
                     
                     <p className="text-base text-[var(--color-primary)] mt-4 max-w-xs mx-auto">
-                      Estoy aquí para ayudarte con cualquier duda sobre la página web. ¿En qué puedo asistirte hoy?
+                      {t('chatAssistant.welcomeMessage')}
                     </p>
                     
                     {/* Sugerencias rápidas */}
                     <div className="mt-6 flex flex-wrap justify-center gap-2">
-                      {["¿Qué servicios ofrecen?", "Contacto", "Proyectos recientes"].map((text, i) => (
+                      {t('chatAssistant.suggestions').map((text, i) => (
                         <motion.button
                           key={i}
                           className="text-sm px-4 py-2 rounded-full border border-[var(--color-button-bg)]/30 text-[var(--color-button-bg)] hover:bg-[var(--color-button-bg)]/10 transition-colors"
@@ -452,7 +454,7 @@ const ChatAssistant = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onFocus={() => setActiveField('message')}
                   onBlur={() => setActiveField(null)}
-                  placeholder="Escribe tu mensaje..."
+                  placeholder={t('chatAssistant.inputPlaceholder')}
                   className="w-full pl-5 pr-14 py-4 bg-[var(--color-background)]/80 border border-[var(--color-border)] rounded-lg text-[var(--color-foreground)] placeholder-[var(--color-primary)]/50 focus:outline-none focus:border-[var(--color-button-bg)] focus:ring-1 focus:ring-[var(--color-button-bg)] transition-colors peer text-base"
                 />
                 
@@ -487,6 +489,7 @@ const ChatAssistant = () => {
                     boxShadow: '0 0 10px rgba(255,102,0,0.3)'
                   }}
                   whileTap={{ scale: 0.95 }}
+                  title={t('chatAssistant.send')}
                 >
                   {/* Efecto de brillo al pasar el mouse */}
                   <motion.div
@@ -508,7 +511,7 @@ const ChatAssistant = () => {
               {/* Nota informativa */}
               <div className="mt-2 text-center">
                 <p className="text-[11px] text-[var(--color-primary)]/50 italic">
-                  Powered by Google Gemini 2.5 Flash
+                  {t('chatAssistant.poweredBy')}
                 </p>
               </div>
             </form>
@@ -519,4 +522,4 @@ const ChatAssistant = () => {
   );
 };
 
-export default ChatAssistant; 
+export default ChatAssistant;

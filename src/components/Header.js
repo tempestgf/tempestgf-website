@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useTranslation } from "../hooks/useTranslation";
@@ -92,25 +93,22 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
             className="flex flex-col relative"
           >
             <div className="flex items-center">
-              {/* Icono simplificado */}
-              <div className="w-10 h-10 mr-3 relative flex items-center justify-center group">
+              {/* Logo GIF */}
+              <div className="w-10 h-10 mr-3 relative flex items-center justify-center overflow-hidden rounded-lg">
                 <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)]/20 to-transparent rounded-lg transition-all duration-300 group-hover:from-[var(--color-button-bg)]/40"></div>
                 
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 relative z-10 transition-all duration-300 group-hover:text-[var(--color-button-bg)]">
-                  <path 
-                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <Image
+                  src="/logo.gif"
+                  alt="Tempestgf Logo"
+                  fill
+                  className="relative z-10 transition-all duration-300 group-hover:scale-110 rounded object-cover"
+                  priority
+                />
               </div>
               
               {/* Texto de marca simplificado */}
               <h1 className="text-2xl font-bold text-[var(--color-foreground)] tracking-wide">
-                {Array.from("tempest").map((letter, i) => (
+                {Array.from("Tempestgf").map((letter, i) => (
                   <span 
                     key={i}
                     className="inline-block transition-all duration-200 hover:text-[var(--color-button-bg)] hover:-translate-y-[2px]"
@@ -143,42 +141,84 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
               onHoverEnd={() => setHoverLink(null)}
               className="relative"
             >
-              <Link href={link.href}>
-                <motion.div
-                  initial="rest"
-                  whileHover="hover"
-                  animate="rest"
-                  className="relative px-3 py-2 rounded-md transition-colors"
-                >
-                  {/* Hover background */}
-                  <motion.div 
-                    className="absolute inset-0 rounded-md bg-[var(--color-button-bg)]/10"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: hoverLink === link.id ? 1 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                  
-                  <span className="relative z-10 text-lg font-medium text-[var(--color-foreground)]">
-                    {link.name}
-                  </span>
-                  
-                  {/* Animated underline */}
-                  <motion.span
-                    variants={underlineVariants}
-                    transition={{ duration: 0.3 }}
-                    className="absolute left-0 bottom-0 h-0.5 bg-[var(--color-button-bg)]"
-                  />
-                  
-                  {/* Decorative dot indicator for active state */}
-                  {link.active && (
+              {link.external ? (
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  <motion.div
+                    initial="rest"
+                    whileHover="hover"
+                    animate="rest"
+                    className="relative px-3 py-2 rounded-md transition-colors"
+                  >
+                    {/* Hover background */}
                     <motion.div 
-                      className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-[var(--color-button-bg)]"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute inset-0 rounded-md bg-[var(--color-button-bg)]/10"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: hoverLink === link.id ? 1 : 0 }}
+                      transition={{ duration: 0.2 }}
                     />
-                  )}
-                </motion.div>
-              </Link>
+                    
+                    <span className="relative z-10 text-lg font-medium text-[var(--color-foreground)] flex items-center">
+                      {link.name}
+                      <svg className="w-3 h-3 ml-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </span>
+                    
+                    {/* Animated underline */}
+                    <motion.span
+                      variants={underlineVariants}
+                      transition={{ duration: 0.3 }}
+                      className="absolute left-0 bottom-0 h-0.5 bg-[var(--color-button-bg)]"
+                    />
+                    
+                    {/* Decorative dot indicator for active state */}
+                    {link.active && (
+                      <motion.div 
+                        className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-[var(--color-button-bg)]"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    )}
+                  </motion.div>
+                </a>
+              ) : (
+                <Link href={link.href}>
+                  <motion.div
+                    initial="rest"
+                    whileHover="hover"
+                    animate="rest"
+                    className="relative px-3 py-2 rounded-md transition-colors"
+                  >
+                    {/* Hover background */}
+                    <motion.div 
+                      className="absolute inset-0 rounded-md bg-[var(--color-button-bg)]/10"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: hoverLink === link.id ? 1 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    
+                    <span className="relative z-10 text-lg font-medium text-[var(--color-foreground)]">
+                      {link.name}
+                    </span>
+                    
+                    {/* Animated underline */}
+                    <motion.span
+                      variants={underlineVariants}
+                      transition={{ duration: 0.3 }}
+                      className="absolute left-0 bottom-0 h-0.5 bg-[var(--color-button-bg)]"
+                    />
+                    
+                    {/* Decorative dot indicator for active state */}
+                    {link.active && (
+                      <motion.div 
+                        className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-[var(--color-button-bg)]"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    )}
+                  </motion.div>
+                </Link>
+              )}
             </motion.div>
           ))}
           
@@ -274,36 +314,71 @@ const Header = ({ isScrolled, navLinks, isMobileMenuOpen, setMobileMenuOpen }) =
                   exit="hidden"
                   className="w-full max-w-xs"
                 >
-                  <Link href={link.href} onClick={() => setMobileMenuOpen(false)}>
-                    <motion.div
-                      whileHover={{ x: 5, backgroundColor: 'rgba(255, 102, 0, 0.1)' }}
-                      className="relative flex items-center px-8 py-3 rounded-md"
-                    >
-                      {/* Icon placeholder - you can add actual icons */}
-                      <div className="w-6 h-6 mr-3 flex items-center justify-center rounded-full bg-[var(--color-button-bg)]/20">
-                        <span className="text-[var(--color-button-bg)] text-xs">{index + 1}</span>
-                      </div>
-                      
-                      <span className="text-lg font-medium text-[var(--color-foreground)]">
-                        {link.name}
-                      </span>
-                      
-                      <motion.div 
-                        className="ml-auto transform rotate-45"
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: 1, x: -5 }}
+                  {link.external ? (
+                    <a href={link.href} target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
+                      <motion.div
+                        whileHover={{ x: 5, backgroundColor: 'rgba(255, 102, 0, 0.1)' }}
+                        className="relative flex items-center px-8 py-3 rounded-md"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
+                        {/* Icon placeholder - you can add actual icons */}
+                        <div className="w-6 h-6 mr-3 flex items-center justify-center rounded-full bg-[var(--color-button-bg)]/20">
+                          <svg className="w-3 h-3 text-[var(--color-button-bg)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </div>
+                        
+                        <span className="text-lg font-medium text-[var(--color-foreground)]">
+                          {link.name}
+                        </span>
+                        
+                        <motion.div 
+                          className="ml-auto transform rotate-45"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1, x: -5 }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                          </svg>
+                        </motion.div>
+                        
+                        {/* Active indicator */}
+                        {link.active && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-button-bg)]"></div>
+                        )}
                       </motion.div>
-                      
-                      {/* Active indicator */}
-                      {link.active && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-button-bg)]"></div>
-                      )}
-                    </motion.div>
-                  </Link>
+                    </a>
+                  ) : (
+                    <Link href={link.href} onClick={() => setMobileMenuOpen(false)}>
+                      <motion.div
+                        whileHover={{ x: 5, backgroundColor: 'rgba(255, 102, 0, 0.1)' }}
+                        className="relative flex items-center px-8 py-3 rounded-md"
+                      >
+                        {/* Icon placeholder - you can add actual icons */}
+                        <div className="w-6 h-6 mr-3 flex items-center justify-center rounded-full bg-[var(--color-button-bg)]/20">
+                          <span className="text-[var(--color-button-bg)] text-xs">{index + 1}</span>
+                        </div>
+                        
+                        <span className="text-lg font-medium text-[var(--color-foreground)]">
+                          {link.name}
+                        </span>
+                        
+                        <motion.div 
+                          className="ml-auto transform rotate-45"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1, x: -5 }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                          </svg>
+                        </motion.div>
+                        
+                        {/* Active indicator */}
+                        {link.active && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-button-bg)]"></div>
+                        )}
+                      </motion.div>
+                    </Link>
+                  )}
                 </motion.li>
               ))}
               

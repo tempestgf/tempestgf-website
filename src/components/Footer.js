@@ -253,18 +253,15 @@ export default function Footer() {
             {/* Company Info - Aumentar espacio */}
             <div className="md:col-span-4 space-y-8">
               <div className="flex items-center">             
-                <div className="w-10 h-10 mr-3 relative flex items-center justify-center">
+                <div className="w-10 h-10 mr-3 relative flex items-center justify-center overflow-hidden rounded-lg">
                   <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-button-bg)]/20 to-transparent rounded-lg"></div>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6">
-                    <path 
-                      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" 
-                      fill="none" 
-                      stroke="var(--color-button-bg)" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <Image
+                    src="/logo.gif"
+                    alt="Tempestgf Logo"
+                    fill
+                    className="relative z-10 rounded object-cover"
+                    priority
+                  />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-foreground)] via-[var(--color-foreground)] to-[var(--color-button-bg)]">
