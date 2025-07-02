@@ -1,15 +1,15 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Configura las claves API para Google AI
-const GOOGLE_API_KEY = 'AIzaSyBvfAYMmoBWc7KGSRl5DOhZECHjsFsDAQE';
-const GEMINI_MODEL = 'gemini-2.5-flash-preview-04-17';
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL;
 
 // Inicializa la API de Google AI con la clave API
 const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
 
 // Configura el modelo
 export async function getGeminiModel() {
-  // Usa el modelo Gemini 2.5 Flash
+  // Usa el modelo Gemini 1.5 Flash
   return genAI.getGenerativeModel({ model: GEMINI_MODEL });
 }
 

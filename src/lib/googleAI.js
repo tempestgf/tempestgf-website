@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
 
 // Configura el modelo
 export async function getGeminiModel() {
-  // Usa el modelo Gemini 2.5 Flash
+  // Usa el modelo Gemini 1.5 Flash
   return genAI.getGenerativeModel({ model: GEMINI_MODEL });
 }
 
