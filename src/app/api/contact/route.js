@@ -28,15 +28,15 @@ export async function POST(req) {
       port: 587,
       secure: false, // true para puerto 465, false para otros puertos
       auth: {
-        user: 'guillem.farriols.segura@gmail.com',
-        pass: 'bkws icdv fkxy jnev', // Contraseña de aplicación
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
       },
     });
 
     // Opciones del correo
     const mailOptions = {
-      from: 'guillem.farriols.segura@gmail.com',
-      to: 'guillem.farriols.segura@gmail.com', // dirección donde quieres recibir los mensajes
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER, // dirección donde quieres recibir los mensajes
       subject: `Mensaje de contacto: ${subject}`,
       replyTo: email,
       text: `
@@ -96,4 +96,4 @@ export async function POST(req) {
       }
     );
   }
-} 
+}
