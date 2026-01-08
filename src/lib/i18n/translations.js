@@ -217,6 +217,10 @@ export const translations = {
       loading: "Cargando..."
     },
     blog: {
+      title: "Blog",
+      subtitle: "Artículos y recursos sobre desarrollo web, ciberseguridad e inteligencia artificial.",
+      share: "Compartir este artículo",
+      backToBlog: "Volver al Blog",
       comingSoon: {
         title: "Próximamente",
         description: "Estoy trabajando en un blog increíble donde compartiré mis conocimientos sobre ciberseguridad, desarrollo web e inteligencia artificial. ¡Mantente atento!",
