@@ -15,6 +15,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  colorScheme: "dark light",
+};
+
 export const metadata = {
   metadataBase: new URL(seoConfig.siteUrl),
   title: {
@@ -24,14 +32,8 @@ export const metadata = {
   description: seoConfig.defaultDescription,
   keywords: seoConfig.keywords,
   authors: [
-    { 
-      name: "Guillem Farriols",
-      url: "https://tempestgf.es" 
-    },
-    {
-      name: "Tempestgf",
-      url: "https://tempestgf.es"
-    }
+    { name: "Guillem Farriols", url: seoConfig.siteUrl },
+    { name: "Tempestgf", url: seoConfig.siteUrl },
   ],
   creator: "Tempestgf - Guillem Farriols",
   publisher: "Tempestgf",
@@ -41,12 +43,7 @@ export const metadata = {
   // Metadatos específicos para el contenido
   applicationName: "Tempestgf Portfolio",
   referrer: "origin-when-cross-origin",
-  colorScheme: "dark light",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
-  
+
   // Open Graph optimizado
   openGraph: {
     type: "website",
@@ -256,10 +253,10 @@ export default function RootLayout({ children }) {
         <link rel="apple-touch-icon" href="/logo.gif" />
         
         {/* Language alternates */}
-        <link rel="alternate" hrefLang="es" href="https://tempestgf.es" />
-        <link rel="alternate" hrefLang="ca" href="https://tempestgf.es?lang=ca" />
-        <link rel="alternate" hrefLang="en" href="https://tempestgf.es?lang=en" />
-        <link rel="alternate" hrefLang="x-default" href="https://tempestgf.es" />
+        <link rel="alternate" hrefLang="es" href={seoConfig.siteUrl} />
+        <link rel="alternate" hrefLang="ca" href={`${seoConfig.siteUrl.replace(/\/$/, '')}?lang=ca`} />
+        <link rel="alternate" hrefLang="en" href={`${seoConfig.siteUrl.replace(/\/$/, '')}?lang=en`} />
+        <link rel="alternate" hrefLang="x-default" href={seoConfig.siteUrl} />
       </head>
       
       <body

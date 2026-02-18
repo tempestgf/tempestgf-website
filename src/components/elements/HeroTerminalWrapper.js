@@ -69,7 +69,7 @@ const HeroTerminalWrapper = ({
   return (
     <motion.div 
       ref={terminalRef}
-      className="flex-1 w-full lg:w-1/2 relative z-20 min-h-[450px]"
+      className="flex-1 w-full lg:basis-1/2 min-h-[450px] relative z-20"
       style={{
         rotateX,
         rotateY,

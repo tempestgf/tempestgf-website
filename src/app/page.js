@@ -17,10 +17,10 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
-    
+
     // Establecer que la página está cargada
     setIsLoaded(true);
-    
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -34,7 +34,7 @@ export default function Home() {
   ];
 
   return (
-    <div className={`min-h-screen flex flex-col bg-gradient-to-br from-white to-gray-50 dark:from-[#0a0a0a] dark:to-[#1a1a1a] transition-colors duration-300 relative ${isLoaded ? 'opacity-100' : 'opacity-0'}`} style={{transition: 'opacity 0.3s ease-in-out'}}>
+    <div className={`min-h-screen flex flex-col bg-gradient-to-br from-white to-gray-50 dark:from-[#0a0a0a] dark:to-[#1a1a1a] transition-colors duration-300 relative ${isLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ transition: 'opacity 0.3s ease-in-out' }}>
       <Header
         isScrolled={isScrolled}
         navLinks={navLinks}

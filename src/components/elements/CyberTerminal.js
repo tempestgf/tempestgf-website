@@ -58,7 +58,7 @@ const CyberTerminal = memo(({
   showHeader = true,
   skipInitialAnimations = false,
   isMobile = false,
-  height = "450px"
+  height = "100%"
 }) => {
   const { t } = useTranslation();
   
@@ -269,9 +269,9 @@ const CyberTerminal = memo(({
       style={{ 
         backgroundColor: 'rgba(var(--color-background-rgb), 0.3)',
         boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.25)',
-        height: height,
-        minHeight: height,
-        maxHeight: height,
+        height: '100%',
+        minHeight: '100%',
+        maxHeight: '100%',
         display: 'flex',
         flexDirection: 'column'
       }}

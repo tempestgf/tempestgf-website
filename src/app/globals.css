@@ -15,7 +15,7 @@
   --color-white: #FFFFFF;
 
   /* Escala de grises */
-  --gray-50:  #fafafa;
+  --gray-50: #fafafa;
   --gray-100: #f5f5f5;
   --gray-200: #e5e5e5;
   --gray-300: #d4d4d8;
@@ -58,7 +58,9 @@
 /* ------------------------------------------------------------------------- */
 /*                         Reset y Estilos Base                              */
 /* ------------------------------------------------------------------------- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   border-color: var(--color-border);
 }
@@ -81,6 +83,7 @@ a {
   text-decoration: none;
   transition: color 0.2s ease, box-shadow 0.2s ease;
 }
+
 a:hover,
 a:focus {
   color: var(--color-accent);
@@ -95,7 +98,12 @@ a:focus {
 }
 
 /* Titulaciones */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.2;
 }
@@ -112,20 +120,23 @@ h1, h2, h3, h4, h5, h6 {
 /*                      Componentes Reutilizables                          */
 /* ------------------------------------------------------------------------- */
 @layer components {
+
   /* Botón primario */
   .btn-primary {
     @apply inline-block px-6 py-3 rounded-xl font-semibold text-white shadow-md transition-all duration-300;
     background-image: linear-gradient(to right, var(--color-button-bg), var(--color-button-bg-hover));
   }
+
   .btn-primary:hover,
   .btn-primary:focus {
     @apply shadow-xl transform scale-105;
   }
-  
+
   /* Botón secundario */
   .btn-secondary {
     @apply inline-block px-6 py-3 rounded-xl font-semibold text-[var(--color-foreground)] border border-[var(--color-border)] transition-all duration-300;
   }
+
   .btn-secondary:hover,
   .btn-secondary:focus {
     @apply bg-[var(--color-background)] shadow-md;
@@ -136,19 +147,23 @@ h1, h2, h3, h4, h5, h6 {
 /*                        Utilidades Adicionales                           */
 /* ------------------------------------------------------------------------- */
 @layer utilities {
+
   /* Contenedor responsivo */
   .container-responsive {
     width: min(100% - 2rem, 1400px);
     @apply mx-auto;
   }
+
   /* Fondo con gradiente radial */
   .bg-gradient-radial {
     background: radial-gradient(circle, var(--color-primary), var(--color-secondary));
   }
+
   /* Sombra de texto */
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
   /* Transición para temas */
   .transition-theme {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -156,22 +171,18 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Scanline effect */
   .bg-scanline {
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(255, 255, 255, 0.05) 50%,
-      transparent 100%
-    );
+    background: repeating-linear-gradient(to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%);
     background-size: 100% 4px;
   }
 
   /* Vignette effect */
   .bg-radial-vignette {
-    background: radial-gradient(
-      circle at center,
-      transparent 0%,
-      rgba(0, 0, 0, 0.4) 100%
-    );
+    background: radial-gradient(circle at center,
+        transparent 0%,
+        rgba(0, 0, 0, 0.4) 100%);
   }
 
   /* Performance optimizations */
@@ -193,13 +204,16 @@ h1, h2, h3, h4, h5, h6 {
 body::-webkit-scrollbar {
   width: 8px;
 }
+
 body::-webkit-scrollbar-thumb {
   background-color: var(--color-button-bg);
   border-radius: 4px;
 }
+
 body::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-button-bg-hover);
 }
+
 body::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 4px;
@@ -212,19 +226,37 @@ html {
 }
 
 @keyframes hue-rotate {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }
 
 @keyframes pulse-glow {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes shine {
-  0% { left: -100%; }
-  100% { left: 200%; }
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 200%;
+  }
 }
 
 /* Clase para aplicar scrollbar personalizado a elementos específicos */
@@ -232,13 +264,16 @@ html {
   width: 8px;
   height: 8px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: var(--color-button-bg);
   border-radius: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-button-bg-hover);
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 4px;

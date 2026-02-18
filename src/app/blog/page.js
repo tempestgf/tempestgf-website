@@ -1,178 +1,226 @@
 "use client";
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { useTranslation } from '../../hooks/useTranslation';
+import BlogCard from '@/components/BlogCard';
+import Footer from '@/components/Footer';
+import { searchPosts, filterByCategory, getCategories } from '@/lib/blogUtils';
 
 export default function BlogPage() {
-  const { t } = useTranslation();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [categories, setCategories] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    fetchPosts();
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/blog');
+      const data = await response.json();
+
+      if (data.success) {
+        setPosts(data.posts);
+        setCategories(['all', ...getCategories(data.posts)]);
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter and search posts
+  const filteredPosts = searchPosts(
+    filterByCategory(posts, selectedCategory),
+    searchQuery
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[var(--color-button-bg)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[var(--color-primary)] text-lg">Cargando blog...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Animated particles */}
-        {[...Array(8)].map((_, i) => (
+    <div className="min-h-screen bg-[var(--color-background)]">
+      {/* Simple Blog Header */}
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-[var(--color-background)]/95 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 group">
+            <span className="text-2xl font-bold text-[var(--color-foreground)] group-hover:text-[var(--color-button-bg)] transition-colors">
+              Tempestgf
+            </span>
+          </Link>
+
+          <nav className="flex items-center gap-6">
+            <Link href="/" className="text-[var(--color-foreground)] hover:text-[var(--color-button-bg)] transition-colors font-medium">
+              Inicio
+            </Link>
+            <Link href="/blog" className="text-[var(--color-button-bg)] font-medium">
+              Blog
+            </Link>
+            <Link href="/#contact" className="px-4 py-2 bg-[var(--color-button-bg)] text-white rounded-lg hover:bg-[var(--color-button-bg-hover)] transition-colors font-medium">
+              Contacto
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section with Gradient */}
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-button-bg)]/5 via-transparent to-purple-500/5" />
+
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-20 w-72 h-72 bg-[var(--color-button-bg)]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+        <div className="relative max-w-7xl mx-auto text-center">
           <motion.div
-            key={i}
-            className="absolute w-32 h-32 rounded-full bg-[var(--color-button-bg)]/5"
-            style={{ 
-              left: `${Math.random() * 100}%`, 
-              top: `${Math.random() * 100}%`
-            }}
-            animate={{
-              x: [0, Math.random() * 40 - 20],
-              y: [0, Math.random() * 40 - 20],
-              scale: [1, 1.1, 1],
-              opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{
-              duration: 5 + Math.random() * 5,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-        
-        {/* Grid lines */}
-        <motion.div
-          className="absolute inset-0"
-          animate={{ opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        >
-          <svg width="100%" height="100%" className="absolute inset-0">
-            <pattern id="blog-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-              <rect x="0" y="0" width="40" height="40" fill="none" stroke="var(--color-button-bg)" strokeWidth="0.5" strokeOpacity="0.1" />
-            </pattern>
-            <rect x="0" y="0" width="100%" height="100%" fill="url(#blog-grid)" />
-          </svg>
-        </motion.div>
-        
-        {/* Decorative borders */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-button-bg)] to-transparent opacity-70"></div>
-        <div className="absolute bottom-0 right-0 w-40 h-40 border-r-2 border-b-2 border-[var(--color-button-bg)] opacity-10"></div>
-        <div className="absolute top-40 left-10 w-20 h-20 border-t-2 border-l-2 border-[var(--color-button-bg)] opacity-10"></div>
-      </div>
-
-      <div className="relative z-10 text-center max-w-4xl mx-auto">
-        {/* Main content */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative"
-        >
-          {/* Decorative icon */}
-          <motion.div 
-            className="w-24 h-24 mx-auto mb-8 relative"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[var(--color-button-bg)]/20 to-transparent"></div>
-            <div className="absolute inset-2 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-button-bg)]/30 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-[var(--color-button-bg)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1 
-            className="text-6xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-foreground)] to-[var(--color-button-bg)]"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            {t('blog.comingSoon.title')}
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p 
-            className="text-xl md:text-2xl text-[var(--color-primary)] mb-8 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            {t('blog.comingSoon.description')}
-          </motion.p>
-
-          {/* Features preview */}
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            {[
-              { icon: "🔐", title: t('blog.comingSoon.features.security'), desc: t('blog.comingSoon.features.securityDesc') },
-              { icon: "🤖", title: t('blog.comingSoon.features.ai'), desc: t('blog.comingSoon.features.aiDesc') },
-              { icon: "💻", title: t('blog.comingSoon.features.development'), desc: t('blog.comingSoon.features.developmentDesc') }
-            ].map((feature, index) => (
-              <motion.div 
-                key={index}
-                className="bg-[var(--color-background)]/50 backdrop-blur-sm border border-[var(--color-border)] rounded-xl p-6 hover:border-[var(--color-button-bg)]/50 transition-all duration-300"
-                whileHover={{ y: -5, scale: 1.02 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 + (index * 0.1) }}
+            <h1 className="blog-title mb-6">
+              Insights & Thoughts
+            </h1>
+            <p className="text-xl md:text-2xl text-[var(--color-primary)] max-w-3xl mx-auto font-light leading-relaxed">
+              Explorando tecnología, desarrollo web, inteligencia artificial y ciberseguridad
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Search and Filters */}
+      <section className="max-w-7xl mx-auto px-6 pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--gray-50)] dark:bg-[var(--gray-900)] p-6 rounded-2xl border border-[var(--color-border)]"
+        >
+          {/* Search Bar */}
+          <div className="relative flex-1 w-full">
+            <svg
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-primary)]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar artículos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-white dark:bg-[var(--gray-800)] border-2 border-[var(--color-border)] rounded-xl focus:border-[var(--color-button-bg)] focus:outline-none transition-colors text-[var(--color-foreground)]"
+            />
+          </div>
+
+          {/* Category Filters */}
+          <div className="flex gap-2 flex-wrap justify-center">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === category
+                    ? 'bg-[var(--color-button-bg)] text-white shadow-lg scale-105'
+                    : 'bg-white dark:bg-[var(--gray-800)] text-[var(--color-foreground)] hover:bg-[var(--gray-100)] dark:hover:bg-[var(--gray-700)] border border-[var(--color-border)]'
+                  }`}
               >
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">{feature.title}</h3>
-                <p className="text-[var(--color-primary)] text-sm">{feature.desc}</p>
-              </motion.div>
+                {category === 'all' ? 'Todos' : category}
+              </button>
             ))}
-          </motion.div>
-
-          {/* CTA Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-          >
-            <Link href="/">
-              <motion.button
-                className="bg-gradient-to-r from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)] text-white px-8 py-4 rounded-lg font-medium relative overflow-hidden group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative z-10 flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                  {t('blog.comingSoon.backHome')}
-                </span>
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '200%' }}
-                  transition={{ duration: 0.7 }}
-                />
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {/* Progress indicator */}
-          <motion.div 
-            className="mt-12 max-w-xs mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-          >
-            <div className="flex justify-between text-sm text-[var(--color-primary)] mb-2">
-              <span>{t('blog.comingSoon.progress')}</span>
-              <span>75%</span>
-            </div>
-            <div className="w-full bg-[var(--color-border)] rounded-full h-2">
-              <motion.div 
-                className="bg-gradient-to-r from-[var(--color-button-bg)] to-[var(--color-button-bg-hover)] h-2 rounded-full"
-                initial={{ width: "0%" }}
-                animate={{ width: "75%" }}
-                transition={{ duration: 2, delay: 1.4 }}
-              />
-            </div>
-          </motion.div>
+          </div>
         </motion.div>
-      </div>
+
+        {/* Results Count */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-[var(--color-primary)] mt-6 text-sm"
+        >
+          {filteredPosts.length} {filteredPosts.length === 1 ? 'artículo' : 'artículos'}
+          {searchQuery && ` que coinciden con "${searchQuery}"`}
+        </motion.p>
+      </section>
+
+      {/* Blog Posts Grid */}
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        <AnimatePresence mode="wait">
+          {filteredPosts.length > 0 ? (
+            <motion.div
+              key="posts-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {filteredPosts.map((post, index) => (
+                <BlogCard key={post.id} post={post} index={index} />
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="no-posts"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="text-center py-20"
+            >
+              <div className="max-w-md mx-auto">
+                <div className="w-24 h-24 mx-auto mb-6 bg-[var(--gray-100)] dark:bg-[var(--gray-800)] rounded-full flex items-center justify-center">
+                  <svg className="w-12 h-12 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--color-foreground)] mb-3">
+                  No se encontraron artículos
+                </h3>
+                <p className="text-[var(--color-primary)] mb-6">
+                  {searchQuery
+                    ? `No hay artículos que coincidan con "${searchQuery}"`
+                    : selectedCategory !== 'all'
+                      ? `No hay artículos en la categoría "${selectedCategory}"`
+                      : 'Próximamente nuevos artículos'}
+                </p>
+                {(searchQuery || selectedCategory !== 'all') && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedCategory('all');
+                    }}
+                    className="px-6 py-3 bg-[var(--color-button-bg)] text-white rounded-xl font-semibold hover:bg-[var(--color-button-bg-hover)] transition-colors"
+                  >
+                    Ver todos los artículos
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </section>
+
+      <Footer />
     </div>
   );
 }

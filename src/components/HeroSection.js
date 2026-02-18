@@ -23,7 +23,7 @@ const HeroSection = () => {
   // Performance tracking
   const renderCountRef = useRef(0);
   const lastRenderTime = useRef(Date.now());
-  
+
   // Added performance monitoring in development
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
@@ -31,7 +31,7 @@ const HeroSection = () => {
       const now = Date.now();
       const timeSinceLastRender = now - lastRenderTime.current;
       lastRenderTime.current = now;
-      
+
       console.log(`HeroSection rendered: #${renderCountRef.current}, Time since last render: ${timeSinceLastRender}ms`);
     }
   });
@@ -41,32 +41,32 @@ const HeroSection = () => {
   const isTablet = useMediaQuery('(max-width: 1024px)');
   const isLowPowerDevice = useMediaQuery('(prefers-reduced-motion: reduce)');
   const prefersReducedData = useMediaQuery('(prefers-reduced-data: reduce)');
-  
+
   // Combine all low-resource conditions
-  const isLowResourceMode = useMemo(() => 
-    isMobile || isLowPowerDevice || prefersReducedData, 
+  const isLowResourceMode = useMemo(() =>
+    isMobile || isLowPowerDevice || prefersReducedData,
     [isMobile, isLowPowerDevice, prefersReducedData]
   );
 
   // Visibility optimization
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { threshold: 0.1 }) || true;
-  
+
   // Core states with optimized defaults
   const [mounted, setMounted] = useState(false);
   const [typingComplete, setTypingComplete] = useState(false);
   const [currentCodeLine, setCurrentCodeLine] = useState(0);
-  
+
   // Get mouse position - Fixed: Don't call hook inside useMemo
   const mousePositionData = useMousePosition();
   // Only use mouse position data if not in low resource mode
   const mousePosition = !isLowResourceMode ? mousePositionData.mousePosition : { x: 0, y: 0, speedX: 0, speedY: 0 };
   const mouseMoving = !isLowResourceMode ? mousePositionData.mouseMoving : false;
-  
+
   // Core refs
   const containerRef = useRef(null);
   const terminalRef = useRef(null);
-  
+
   // Motion values - optimized to minimize reflows
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -74,9 +74,9 @@ const HeroSection = () => {
   const cursorY = useMotionValue(0);
   const cursorSizeValue = useMotionValue(20);
   const cursorScale = useTransform(cursorSizeValue, [20, 60], [1, 1.5]);
-  
+
   // Enhanced dynamic performance scaling
-  const qualitySettings = useMemo(() => 
+  const qualitySettings = useMemo(() =>
     getQualitySettings(isMobile, isTablet, isLowPowerDevice, prefersReducedData),
     [isMobile, isTablet, isLowPowerDevice, prefersReducedData]
   );
@@ -84,9 +84,9 @@ const HeroSection = () => {
   // Apply quality settings pero con valores fijos (0) para eliminar inclinación
   const rotateX = useTransform(y, [-300, 300], [0, 0]);
   const rotateY = useTransform(x, [-300, 300], [0, 0]);
-  
+
   // Setup hero effects with memoized dependencies
-  const { 
+  const {
     glitchActive,
     showFlare,
     scanLineActive,
@@ -101,15 +101,15 @@ const HeroSection = () => {
     terminalComponent,
     visibleParticles
   } = useHeroEffects({
-    isMobile, 
-    isTablet, 
-    isLowResourceMode, 
-    isInView, 
+    isMobile,
+    isTablet,
+    isLowResourceMode,
+    isInView,
     mounted,
     containerRef,
-    x, y, 
+    x, y,
     cursorX, cursorY,
-    mousePosition, 
+    mousePosition,
     mouseMoving,
     qualitySettings,
     setTypingComplete,
@@ -128,7 +128,7 @@ const HeroSection = () => {
 
   // Estado para almacenar la altura de la ventana
   const [windowHeight, setWindowHeight] = useState(0);
-  
+
   // Actualizar altura de la ventana al montar y cuando cambie el tamaño
   useEffect(() => {
     const updateWindowHeight = () => {
@@ -136,13 +136,13 @@ const HeroSection = () => {
         setWindowHeight(window.innerHeight);
       }
     };
-    
+
     // Actualizar altura inicial
     updateWindowHeight();
-    
+
     // Agregar listener para cambios de tamaño
     window.addEventListener('resize', updateWindowHeight);
-    
+
     // Limpiar listener al desmontar
     return () => window.removeEventListener('resize', updateWindowHeight);
   }, []);
@@ -150,14 +150,14 @@ const HeroSection = () => {
   // Main initialization
   useEffect(() => {
     setMounted(true);
-    
+
     // Only force repaint if there are rendering issues
     if (typeof window !== 'undefined' && window.performance?.measure) {
       window.requestAnimationFrame(() => {
         // Mark performance for debugging
         try {
           performance.mark('hero-loaded');
-        } catch (e) {}
+        } catch (e) { }
       });
     }
   }, []);
@@ -166,7 +166,7 @@ const HeroSection = () => {
   const scrollToAbout = useCallback(() => {
     const aboutSection = document.getElementById('about');
     if (aboutSection) {
-      aboutSection.scrollIntoView({ 
+      aboutSection.scrollIntoView({
         behavior: isLowResourceMode ? 'auto' : 'smooth',
         block: 'start'
       });
@@ -184,7 +184,7 @@ const HeroSection = () => {
       id="home"
       aria-label="Sección principal"
       className="relative flex items-center justify-center overflow-hidden bg-[var(--color-background)] transition-theme touch-manipulation pt-20 sm:pt-24"
-      style={{ 
+      style={{
         paddingTop: `${headerHeight}px`,
         minHeight: isMobile && windowHeight > 0 ? `${windowHeight}px` : '100vh',
         height: isMobile && windowHeight > 0 ? `${windowHeight}px` : 'auto'
@@ -192,7 +192,7 @@ const HeroSection = () => {
     >
       {/* Custom cursor effect - solo en desktop */}
       {!isMobile && !isLowResourceMode && (
-        <CursorEffect 
+        <CursorEffect
           isMobile={isMobile}
           isLowPowerDevice={isLowPowerDevice}
           cursorX={cursorX}
@@ -202,10 +202,10 @@ const HeroSection = () => {
           visibleParticles={visibleParticles}
         />
       )}
-      
+
       {/* Background elements - solo en desktop */}
       {!isMobile && (
-        <HeroBackground 
+        <HeroBackground
           isMobile={isMobile}
           isLowPowerDevice={isLowPowerDevice}
           particleSystem={particleSystem}
@@ -226,18 +226,18 @@ const HeroSection = () => {
       )}
 
       {/* Main Content con efecto 3D desactivado */}
-      <div 
+      <div
         ref={containerRef}
         className="relative z-10 w-full max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 flex flex-col lg:flex-row items-center gap-5 md:gap-8 lg:gap-12"
-        style={{ 
+        style={{
           perspective: isMobile ? 1500 : 2500,
           marginTop: isMobile ? '20px' : '32px',
           marginBottom: isMobile ? '60px' : '40px'
         }}
       >
         {/* Left content - sin efecto de movimiento con el mouse */}
-        <motion.div 
-          className="flex-1 w-full space-y-4 sm:space-y-6 backdrop-blur-lg rounded-xl sm:rounded-2xl bg-[var(--color-background)]/5 p-3 sm:p-4 lg:p-8 border border-[var(--color-border)]/30 relative overflow-hidden"
+        <motion.div
+          className="flex-1 w-full lg:basis-1/2 space-y-4 sm:space-y-6 backdrop-blur-lg rounded-xl sm:rounded-2xl bg-[var(--color-background)]/5 p-3 sm:p-4 lg:p-8 border border-[var(--color-border)]/30 relative overflow-hidden"
           style={{
             // Sin valores de rotación
             transformStyle: "preserve-3d",
@@ -258,7 +258,7 @@ const HeroSection = () => {
         >
           {/* Glass morphism effect enhancement */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-black/0 dark:from-white/5 dark:to-black/20 z-0"></div>
-          
+
           {/* Dynamic color glow effect - Solo en desktop */}
           {activeAttention === "title" && !isLowResourceMode && !isMobile && (
             <motion.div
@@ -274,16 +274,16 @@ const HeroSection = () => {
               }}
             />
           )}
-          
+
           <div className="space-y-3 sm:space-y-4 md:space-y-6 relative z-10">
             {/* Title section - siempre visible */}
             <HeroTitle isMobile={isMobile} />
-            
+
             {/* Description section - siempre visible */}
             <HeroDescription isMobile={isMobile} />
           </div>
         </motion.div>
-        
+
         {/* Right content - Terminal/Code Visualization - Solo en desktop */}
         {!isMobile && (
           <HeroTerminalWrapper
@@ -297,10 +297,10 @@ const HeroSection = () => {
           />
         )}
       </div>
-      
+
       {/* Decorative cyber element - bottom corner - only on desktop */}
       {!isMobile && !isLowResourceMode && <DecorativeElement />}
-      
+
       {/* Scroll indicator - simplified - move up on mobile */}
       <div className={`${isMobile ? "absolute bottom-8 left-0 right-0" : "absolute bottom-10 left-0 right-0"}`}>
         <ScrollIndicator scrollToAbout={scrollToAbout} isLowResourceMode={isLowResourceMode} />
